@@ -1,2 +1,3 @@
 # lifelogspd
-LifelofSPDaemon - Data collection/editor.
+
+LifelogSPDaemon - Data collection/editor.
