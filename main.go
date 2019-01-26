@@ -3,5 +3,5 @@ package main
 import "fmt"
 
 func main() {
-	fmt.Println("LifelogSPDaemon\n")
+	fmt.Println("LifelogSPDaemon")
 }
