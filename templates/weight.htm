@@ -68,33 +68,37 @@ function MeasurementListViewModel() {
     self.addMeasurement = function() {
         self.successMessage("");
 
-        $.post("/api/weight", { date: new Date(), weight: self.newMeasurementWeight(), height: self.newMeasurementHeight() })
-            .done(function(data) {
-                self.successMessage(data.date);
-                
-                self.measurements.push(new Measurement({ date: data.date, weight: data.weight, height: data.height }));
-                self.newMeasurementWeight("");
-                self.newMeasurementHeight(data.height);
-            })
-            .fail(function (jqXHR, textStatus, error) {
-                self.errorMessage("Post error: " + error);
-            });
+        $.post("/api/weight", {
+            date: new Date(), weight: self.newMeasurementWeight(), height: self.newMeasurementHeight()
+        })
+        .done(function(data) {
+            self.successMessage(data.date);
+            
+            self.measurements.unshift(new Measurement({ date: data.date, weight: data.weight, height: data.height }));
+            self.newMeasurementWeight("");
+            self.newMeasurementHeight(data.height);
+        })
+        .fail(function (jqXHR, textStatus, error) {
+            self.errorMessage("Post error: " + error);
+        });
     };
     self.removeMeasurement = function(measurement) {
-        self.measurements.destroy(measurement);
-    };
-    /*self.save = function() {
-        $.ajax("/api/weight", {
-            data: ko.toJSON({ measurement: self.newMeasurement }),
-            type: "post", contentType: "application/json",
-            success: function(result) { alert(result) }
+        $.ajax({
+            url: '/api/weight/' + measurement.date(),
+            type: 'DELETE',
+        })
+        .done(function(data) {
+            self.measurements.destroy(measurement);
+        })
+        .fail(function (jqXHR, textStatus, error) {
+            self.errorMessage("Delete error: " + error);
         });
-    };*/
+    };
 
     // Load initial state from server, convert it to Measurement instances, then populate self.measurements
     $.getJSON("/api/weight", function(data) {
+        data = data.sort((a, b) => (a.date > b.date) ? -1 : ((b.date > a.date) ? 1 : 0)); // Descending
         var mappedMeasurements = $.map(data, function(item) { return new Measurement(item) });
-        mappedMeasurements = mappedMeasurements.sort((a, b) => (a.date > b.date) ? 1 : ((b.date > a.date) ? -1 : 0)); 
         self.measurements(mappedMeasurements);
     });
 }
