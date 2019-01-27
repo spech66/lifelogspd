@@ -9,6 +9,6 @@ import (
 // WeightHandler renders the weight view
 func WeightHandler(c echo.Context) error {
 	return c.Render(http.StatusOK, "weight.htm", map[string]interface{}{
-		"height": "192,0",
+		"height": "192.0",
 	})
 }
