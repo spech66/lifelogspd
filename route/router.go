@@ -29,7 +29,8 @@ func Init() *echo.Echo {
 	{
 		apiGroup.GET("/weight", api.GetWeight())
 		//apiGroup.GET("/weight/:date", api.GetWeight())
-		//apiGroup.POST("/weight", api.PostWeight())
+		apiGroup.POST("/weight", api.PostWeight())
+		apiGroup.DELETE("/weight/:date", api.DeleteWeight())
 	}
 
 	return e

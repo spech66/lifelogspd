@@ -5,6 +5,12 @@
 <div class="container-fluid text-center">
     <h1>LifelogSP - Weight</h1>
 
+    <div class="alert alert-success" role="alert" data-bind="visible: successMessage().length > 0">
+        Saved successfully.
+    </div>
+    <div class="alert alert-danger" role="alert" data-bind="visible: errorMessage().length > 0, text: errorMessage">
+    </div>
+
     <form data-bind="submit: addMeasurement">
         <div class="form-group">
             <label for="weightInput">Weight</label>
@@ -21,14 +27,24 @@
         <a class="btn btn-secondary btn-lg" href="/" role="button"><i class="fas fa-arrow-circle-left fa-4x"></i><br />Back</a>
     </p>
 
-    <ul data-bind="foreach: measurements, visible: measurements().length > 0">
-        <li>
-            <span data-bind="text: date"></span>
-            <span data-bind="text: weight"></span>
-            <span data-bind="text: height"></span>
-            <a href="#" data-bind="click: $parent.removeMeasurement">Delete</a>
-        </li> 
-    </ul>
+    <table class="table table-striped">
+        <thead>
+            <tr>
+                <th scope="col">Date</th>
+                <th scope="col">Weight</th>
+                <th scope="col">Height</th>
+                <th scope="col"></th>
+            </tr>
+        </thead>
+        <tbody data-bind="foreach: measurements, visible: measurements().length > 0">
+            <tr>
+                <th scope="row"><span data-bind="text: date"></span></th>
+                <td><span data-bind="text: weight"></span> kg</td>
+                <td><span data-bind="text: height"></span> cm</td>
+                <td><a href="#" data-bind="click: $parent.removeMeasurement"><i class="fas fa-trash fa-2x"></i></a></td>
+            </tr>
+        </tbody>
+    </table>
 </div>
 {{end}}
 {{define "scripts"}}
@@ -42,15 +58,27 @@ function Measurement(data) {
 function MeasurementListViewModel() {
     // Data
     var self = this;
+    self.successMessage = ko.observable("");
+    self.errorMessage = ko.observable("");
     self.measurements = ko.observableArray([]);
     self.newMeasurementWeight = ko.observable("{{ .weight }}");
     self.newMeasurementHeight = ko.observable("{{ .height }}");
 
     // Operations
     self.addMeasurement = function() {
-        self.measurements.push(new Measurement({ date: new Date(), weight: self.newMeasurementWeight(), height: self.newMeasurementHeight() }));
-        self.newMeasurementWeight("");
-        self.newMeasurementHeight(self.newMeasurementHeight());
+        self.successMessage("");
+
+        $.post("/api/weight", { date: new Date(), weight: self.newMeasurementWeight(), height: self.newMeasurementHeight() })
+            .done(function(data) {
+                self.successMessage(data.date);
+                
+                self.measurements.push(new Measurement({ date: data.date, weight: data.weight, height: data.height }));
+                self.newMeasurementWeight("");
+                self.newMeasurementHeight(data.height);
+            })
+            .fail(function (jqXHR, textStatus, error) {
+                self.errorMessage("Post error: " + error);
+            });
     };
     self.removeMeasurement = function(measurement) {
         self.measurements.destroy(measurement);
@@ -66,6 +94,7 @@ function MeasurementListViewModel() {
     // Load initial state from server, convert it to Measurement instances, then populate self.measurements
     $.getJSON("/api/weight", function(data) {
         var mappedMeasurements = $.map(data, function(item) { return new Measurement(item) });
+        mappedMeasurements = mappedMeasurements.sort((a, b) => (a.date > b.date) ? 1 : ((b.date > a.date) ? -1 : 0)); 
         self.measurements(mappedMeasurements);
     });
 }
