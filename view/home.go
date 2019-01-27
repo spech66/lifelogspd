@@ -6,9 +6,7 @@ import (
 	"github.com/labstack/echo"
 )
 
-// HomeHandler renders the index route
+// HomeHandler renders the index view
 func HomeHandler(c echo.Context) error {
-	return c.Render(http.StatusOK, "_base.htm", map[string]interface{}{
-		"name": "Home",
-	})
+	return c.Render(http.StatusOK, "index.htm", map[string]interface{}{})
 }
