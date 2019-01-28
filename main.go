@@ -2,6 +2,7 @@ package main
 
 import (
 	"errors"
+	"flag"
 	"fmt"
 	"html/template"
 	"io"
@@ -27,8 +28,19 @@ func (t *TemplateRegistry) Render(w io.Writer, name string, data interface{}, c 
 	return tmpl.ExecuteTemplate(w, "_base.htm", data)
 }
 
+var flagBind string
+var flagConfig string
+
+func init() {
+	flag.StringVar(&flagBind, "bind", ":8066", "ip:port to bind the server to")
+	flag.StringVar(&flagConfig, "config", "config.json", "the config file to read from")
+	flag.Parse()
+}
+
 func main() {
 	fmt.Println("LifelogSPDaemon")
+	fmt.Println("Binding server to", flagBind)
+	fmt.Println("Reding config from", flagConfig)
 
 	router := route.Init()
 
@@ -44,5 +56,5 @@ func main() {
 	}
 
 	// Start the server
-	router.Logger.Fatal(router.Start(":8066"))
+	router.Logger.Fatal(router.Start(flagBind))
 }
