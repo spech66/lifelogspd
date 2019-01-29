@@ -33,6 +33,7 @@
                 <th scope="col">Date</th>
                 <th scope="col">Weight</th>
                 <th scope="col">Height</th>
+                <th scope="col">BMI</th>
                 <th scope="col"></th>
             </tr>
         </thead>
@@ -41,6 +42,7 @@
                 <th scope="row"><span data-bind="text: date"></span></th>
                 <td><span data-bind="text: weight"></span> kg</td>
                 <td><span data-bind="text: height"></span> cm</td>
+                <td><span data-bind="text: bmi"></span></td>
                 <td><a href="#" data-bind="click: $parent.removeMeasurement"><i class="fas fa-trash fa-2x"></i></a></td>
             </tr>
         </tbody>
@@ -53,6 +55,7 @@ function Measurement(data) {
     this.date = ko.observable(data.date);
     this.weight = ko.observable(data.weight);
     this.height = ko.observable(data.height);
+    this.bmi = ko.observable(parseFloat(data.bmi).toFixed(1));
 }
 
 function MeasurementListViewModel() {

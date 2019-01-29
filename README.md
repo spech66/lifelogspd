@@ -2,18 +2,14 @@
 
 LifelogSPDaemon - Data collection/editor related to [LifelogSP](https://github.com/spech66/lifelogsp).
 
-This daemon is intend for use in a local network. For securing the access use a proxy like nginx (see below).
+This daemon is intend for use in a local network. For securing the access use a proxy like nginx (see below)!
 
 ## Status
 
-* Weight: Work in progress
-* Journal: Work in progress
-* Strength training: Work in progress
-* Endurance workout: Work in progress
-
-## Dependencies
-
-* [Go Echo web framework](github.com/labstack/echo) - High performance, minimalist Go web framework
+* **Weight:** Work in progress
+* **Journal:** Work in progress
+* **Strength** training: Work in progress
+* **Endurance** workout: Work in progress
 
 ## nginx reverse proxy with basic auth
 
@@ -35,3 +31,7 @@ server {
         }
 }
 ```
+
+## Dependencies
+
+* [Go echo web framework](github.com/labstack/echo) - High performance, minimalist Go web framework
