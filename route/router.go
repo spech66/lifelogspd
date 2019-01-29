@@ -52,6 +52,7 @@ func Init(config *helper.Config) *echo.Echo {
 	// View routes => handler
 	e.GET("/", view.HomeHandler)
 	e.GET("/weight", view.WeightHandler)
+	e.GET("/weightgraph", view.WeightGraphHandler)
 	e.GET("/journal", view.JournalHandler)
 	e.GET("/strengthtraining", view.StrengthtrainingHandler)
 	e.GET("/enduranceworkout", view.EnduranceworkoutHandler)
@@ -60,6 +61,7 @@ func Init(config *helper.Config) *echo.Echo {
 	templates := make(map[string]*template.Template)
 	templates["index.htm"] = template.Must(template.ParseFiles("templates/index.htm", "templates/_base.htm"))
 	templates["weight.htm"] = template.Must(template.ParseFiles("templates/weight.htm", "templates/_base.htm"))
+	templates["weightgraph.htm"] = template.Must(template.ParseFiles("templates/weightgraph.htm", "templates/_base.htm"))
 	templates["journal.htm"] = template.Must(template.ParseFiles("templates/journal.htm", "templates/_base.htm"))
 	templates["strengthtraining.htm"] = template.Must(template.ParseFiles("templates/strengthtraining.htm", "templates/_base.htm"))
 	templates["enduranceworkout.htm"] = template.Must(template.ParseFiles("templates/enduranceworkout.htm", "templates/_base.htm"))

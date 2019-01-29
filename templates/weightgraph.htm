@@ -1,0 +1,38 @@
+{{define "title"}}
+    Journal
+{{end}}
+{{define "body"}}
+<div class="container-fluid text-center">
+    <h1>Weight</h1>
+
+    <canvas id="weightChart"></canvas>
+
+    <p>
+        <a class="btn btn-secondary btn-lg" href="/weight" role="button"><i class="fas fa-arrow-circle-left fa-4x"></i><br />Back</a>
+    </p>
+</div>
+{{end}}
+{{define "scripts"}}
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.7.3/Chart.bundle.min.js"></script>
+<script>
+$(function () {
+    var ctx = document.getElementById("weightChart").getContext('2d');
+
+    var myChart = new Chart(ctx, {
+        type: 'line',
+        data: {
+            datasets: [{
+                label: 'Weight',
+                data:  [{
+                            x: 10,
+                            y: 20
+                        }, {
+                            x: 15,
+                            y: 10
+                        }]
+            }]
+        }
+    });
+});
+</script>
+{{end}}
