@@ -1,14 +1,45 @@
 package route
 
 import (
+	"errors"
+	"io"
+	"text/template"
+
 	"github.com/labstack/echo"
 	"github.com/labstack/echo/middleware"
 	"github.com/spech66/lifelogspd/api"
+	"github.com/spech66/lifelogspd/helper"
 	"github.com/spech66/lifelogspd/view"
 )
 
+func configExtender(config *helper.Config) echo.MiddlewareFunc {
+	return func(next echo.HandlerFunc) echo.HandlerFunc {
+		return func(c echo.Context) error {
+			c.Set("config", config)
+			return next(c)
+		}
+	}
+}
+
+// TemplateRegistry defines the template registry struct
+type TemplateRegistry struct {
+	templates map[string]*template.Template
+}
+
+// Render templates by implementing e.Renderer interface => https://blog.boatswain.io/post/setup-nested-html-template-in-go-echo-web-framework/
+func (t *TemplateRegistry) Render(w io.Writer, name string, data interface{}, c echo.Context) error {
+	tmpl, ok := t.templates[name]
+
+	if !ok {
+		err := errors.New("Template not found -> " + name)
+		return err
+	}
+
+	return tmpl.ExecuteTemplate(w, "_base.htm", data)
+}
+
 // Init initializes echo and routes => https://github.com/eurie-inc/echo-sample
-func Init() *echo.Echo {
+func Init(config *helper.Config) *echo.Echo {
 	// Echo instance
 	e := echo.New()
 	//e.Debug()
@@ -16,6 +47,7 @@ func Init() *echo.Echo {
 	// Middleware
 	e.Use(middleware.Logger())
 	e.Use(middleware.Recover())
+	e.Use(configExtender(config))
 
 	// View routes => handler
 	e.GET("/", view.HomeHandler)
@@ -23,6 +55,17 @@ func Init() *echo.Echo {
 	e.GET("/journal", view.JournalHandler)
 	e.GET("/strengthtraining", view.StrengthtrainingHandler)
 	e.GET("/enduranceworkout", view.EnduranceworkoutHandler)
+
+	// Parse all templates
+	templates := make(map[string]*template.Template)
+	templates["index.htm"] = template.Must(template.ParseFiles("templates/index.htm", "templates/_base.htm"))
+	templates["weight.htm"] = template.Must(template.ParseFiles("templates/weight.htm", "templates/_base.htm"))
+	templates["journal.htm"] = template.Must(template.ParseFiles("templates/journal.htm", "templates/_base.htm"))
+	templates["strengthtraining.htm"] = template.Must(template.ParseFiles("templates/strengthtraining.htm", "templates/_base.htm"))
+	templates["enduranceworkout.htm"] = template.Must(template.ParseFiles("templates/enduranceworkout.htm", "templates/_base.htm"))
+	e.Renderer = &TemplateRegistry{
+		templates: templates,
+	}
 
 	// Api routes => handler
 	apiGroup := e.Group("/api")
