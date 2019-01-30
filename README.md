@@ -6,11 +6,16 @@ This daemon is intend for use in a local network. For securing the access use a 
 
 ## Status
 
-* **Weight:** Work in progress :chart_with_upwards_trend:
+* **Weight:** Mostly working except for deletion of data :chart_with_upwards_trend:
 * **Weight Chart:** Working :heavy_check_mark: (Lines for good/bad bmi/weight might be added in the future)
 * **Journal:** Work in progress :construction:
-* **Strength** training: Work in progress :construction:
-* **Endurance** workout: Work in progress :construction:
+* **Strength training:** Work in progress :construction:
+* **Endurance workout:** Work in progress :construction:
+
+![Start](https://raw.githubusercontent.com/spech66/lifelogspd/master/_screenshots/001_start.png "Start")
+![Weight](https://raw.githubusercontent.com/spech66/lifelogspd/master/_screenshots/002_weight_01.png "Weight")
+![Weight Graph](https://raw.githubusercontent.com/spech66/lifelogspd/master/_screenshots/002_weight_02.png "Weight Graph")
+
 
 ## nginx reverse proxy with basic auth
 
