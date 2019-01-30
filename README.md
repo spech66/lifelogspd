@@ -7,6 +7,7 @@ This daemon is intend for use in a local network. For securing the access use a 
 ## Status
 
 * **Weight:** Work in progress
+* **Weight Chart:** Working :heavy_check_mark: (Lines for good/bad bmi/weight might be added in the future)
 * **Journal:** Work in progress
 * **Strength** training: Work in progress
 * **Endurance** workout: Work in progress
