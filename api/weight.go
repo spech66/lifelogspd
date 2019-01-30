@@ -6,7 +6,6 @@ import (
 	"fmt"
 	"net/http"
 	"os"
-	"path/filepath"
 	"strconv"
 	"time"
 
@@ -52,6 +51,7 @@ func PostWeight() echo.HandlerFunc {
 		measurement.Bmi = strconv.FormatFloat(bmi, 'f', -1, 64)
 		fmt.Println(measurement)
 
+		addData(c.Get("config").(*helper.Config).WeightPath, &measurement)
 		jsonData := dataToJSON(&[]Measurement{measurement})
 		return c.JSONBlob(http.StatusOK, jsonData)
 	}
@@ -69,9 +69,7 @@ func DeleteWeight() echo.HandlerFunc {
 	}
 }
 
-func readAllData(weightPath string) []Measurement {
-	year := time.Now().Format("2006")
-	filename := filepath.Join(weightPath, year+"_weight.csv")
+func readAllData(filename string) []Measurement {
 	fmt.Println("Weight data from", filename)
 
 	f, err := os.Open(filename)
@@ -107,9 +105,7 @@ func readAllData(weightPath string) []Measurement {
 	return measurements
 }
 
-func addData(weightPath string, data *Measurement) {
-	year := time.Now().Format("2006")
-	filename := filepath.Join(weightPath, year+"_weight.csv")
+func addData(filename string, data *Measurement) {
 	fmt.Println("Weight data to", filename)
 
 	f, err := os.OpenFile(filename, os.O_WRONLY|os.O_CREATE|os.O_APPEND, 0644)
