@@ -79,9 +79,10 @@ function MeasurementListViewModel() {
         self.successMessage("");
 
         $.post("/api/weight", {
-            date: new Date(), weight: self.newMeasurementWeight(), height: self.newMeasurementHeight()
+            weight: self.newMeasurementWeight(), height: self.newMeasurementHeight()
         })
         .done(function(data) {
+            data = data[0] // array to value
             self.successMessage(data.date);
             
             self.measurements.unshift(new Measurement(data));
