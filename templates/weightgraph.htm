@@ -16,7 +16,9 @@
 </div>
 {{end}}
 {{define "scripts"}}
-<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.7.3/Chart.bundle.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.24.0/moment.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.24.0/locale/de.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.7.3/Chart.min.js"></script>
 <script>
 function Measurement(data) {
     this.date = data.date;
@@ -68,24 +70,31 @@ $(function () {
         data = data.sort((a, b) => (a.date > b.date) ? 1 : ((b.date > a.date) ? -1 : 0)); // Ascending!
         var mappedMeasurements = $.map(data, function(item) { return new Measurement(item) });
 
-        var data = [{
-                    x: "20190101 14:00:00",
-                    y: 89
-                }, {
-                    x: "20190103 15:00:00",
-                    y: 92
-                }, {
-                    x: "20190203 11:30:00",
-                    y: 94
-                }, {
-                    x: "20190403 12:40:00",
-                    y: 87
-                }];
+        var twoMonth = moment().startOf('day').subtract(2, 'months');
+        const result2Month = mappedMeasurements.filter(dat => moment(dat.date).isAfter(twoMonth)).map(sel => { return {
+                    x: sel.date,
+                    y: sel.weight
+                }});
 
-        generateChart("weightChartShort", "2 Month", 'rgb(51, 153, 51)', data);
-        generateChart("weightChartYear", "1 Year Weight", 'rgb(51, 153, 51)', data);
-        generateChart("weightChartYearBmi", "1 Year BMI", 'rgb(51, 51, 153)', data);
-        generateChart("weightChartAll", "All", 'rgb(51, 153, 51)', data);
+        var oneYear = moment().startOf('day').subtract(1, 'year');
+        const result1Year = mappedMeasurements.filter(dat => moment(dat.date).isAfter(oneYear)).map(sel => { return {
+                    x: sel.date,
+                    y: sel.weight
+                }});
+        const result1YearBmi = mappedMeasurements.filter(dat => moment(dat.date).isAfter(oneYear)).map(sel => { return {
+                    x: sel.date,
+                    y: sel.bmi
+                }});
+
+        const resultAll = mappedMeasurements.map(sel => { return {
+                    x: sel.date,
+                    y: sel.weight
+                }});
+
+        generateChart("weightChartShort", "2 Month", 'rgb(51, 153, 51)', result2Month);
+        generateChart("weightChartYear", "1 Year Weight", 'rgb(51, 153, 51)', result1Year);
+        generateChart("weightChartYearBmi", "1 Year BMI", 'rgb(51, 51, 153)', result1YearBmi);
+        generateChart("weightChartAll", "All", 'rgb(51, 153, 51)', resultAll);
     });
 });
 </script>
