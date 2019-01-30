@@ -5,7 +5,10 @@
 <div class="container text-center">
     <h1>Weight</h1>
 
-    <canvas id="weightChart"></canvas>
+    <canvas id="weightChartShort"></canvas>
+    <canvas id="weightChartYear"></canvas>
+    <canvas id="weightChartYearBmi"></canvas>
+    <canvas id="weightChartAll"></canvas>
 
     <p>
         <a class="btn btn-secondary btn-lg" href="/weight" role="button"><i class="fas fa-arrow-circle-left fa-2x"></i><br />Back</a>
@@ -15,23 +18,74 @@
 {{define "scripts"}}
 <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.7.3/Chart.bundle.min.js"></script>
 <script>
-$(function () {
-    var ctx = document.getElementById("weightChart").getContext('2d');
+function Measurement(data) {
+    this.date = data.date;
+    this.weight = data.weight;
+    this.height = data.height;
+    this.bmi = (parseFloat(data.bmi).toFixed(1));
+    this.bmioverweight = data.bmioverweight;
+    this.bmiunderweight = data.bmiunderweight;
+    this.height = data.height;
+}
+
+function generateChart(selDiv, chartTitle, chartColor, chartData) {
+    var ctx = document.getElementById(selDiv).getContext('2d');
 
     var myChart = new Chart(ctx, {
         type: 'line',
         data: {
             datasets: [{
-                label: 'Weight',
-                data:  [{
-                            x: 10,
-                            y: 20
-                        }, {
-                            x: 15,
-                            y: 10
-                        }]
+                label: chartTitle,
+                borderColor: chartColor,
+                backgroundColor: chartColor,
+                data: chartData
             }]
+        },
+        options: {
+            title: {
+                text: chartTitle
+            },
+            scales: {
+                xAxes: [{
+                    type: 'time',
+                    time: {
+                        parser: 'YYYYMMDD HH:mm',
+                        round: 'day',
+                        tooltipFormat: 'DD.MM.YYYY HH:mm'
+                    },
+                    scaleLabel: {
+                        display: true,
+                        labelString: 'Date'
+                    }
+                }]
+            }
         }
+    });
+}
+
+$(function () {
+    $.getJSON("/api/weight", function(data) {
+        data = data.sort((a, b) => (a.date > b.date) ? 1 : ((b.date > a.date) ? -1 : 0)); // Ascending!
+        var mappedMeasurements = $.map(data, function(item) { return new Measurement(item) });
+
+        var data = [{
+                    x: "20190101 14:00:00",
+                    y: 89
+                }, {
+                    x: "20190103 15:00:00",
+                    y: 92
+                }, {
+                    x: "20190203 11:30:00",
+                    y: 94
+                }, {
+                    x: "20190403 12:40:00",
+                    y: 87
+                }];
+
+        generateChart("weightChartShort", "2 Month", 'rgb(51, 153, 51)', data);
+        generateChart("weightChartYear", "1 Year Weight", 'rgb(51, 153, 51)', data);
+        generateChart("weightChartYearBmi", "1 Year BMI", 'rgb(51, 51, 153)', data);
+        generateChart("weightChartAll", "All", 'rgb(51, 153, 51)', data);
     });
 });
 </script>
