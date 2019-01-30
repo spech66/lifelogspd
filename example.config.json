@@ -1,3 +1,4 @@
 {
-    "weightdata": "data/example/weight.csv"
+    "weightdata": "data/example/weight.csv",
+    "defaultheight": "186.0"
 }
