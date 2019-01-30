@@ -2,14 +2,22 @@
     Home
 {{end}}
 {{define "body"}}
-<div class="container-fluid text-center">
+<div class="container text-center">
     <h1>LifelogSP</h1>
-    <p>
-        <a class="btn btn-primary btn-lg" href="/weight" role="button"><i class="fas fa-weight fa-8x"></i><br />Weight</a>
-        <a class="btn btn-primary btn-lg" href="/journal" role="button"><i class="fas fa-pencil-alt fa-8x"></i><br />Journal</a>
-        <a class="btn btn-primary btn-lg" href="/strengthtraining" role="button"><i class="fas fa-dumbbell fa-8x"></i><br />Strength training</a>
-        <a class="btn btn-primary btn-lg" href="/enduranceworkout" role="button"><i class="fas fa-running fa-8x"></i><br />Endurance workout</a>
-    </p>
+    <div class="row">
+        <div class="col-12 col-md-6">
+            <a class="btn btn-primary btn-lg" href="/weight" role="button"><i class="fas fa-weight fa-4x"></i><br />Weight</a>
+        </div>
+        <div class="col-12 col-md-6">
+            <a class="btn btn-primary btn-lg" href="/journal" role="button"><i class="fas fa-pencil-alt fa-4x"></i><br />Journal</a>
+        </div>
+        <div class="col-12 col-md-6">
+            <a class="btn btn-primary btn-lg" href="/strengthtraining" role="button"><i class="fas fa-dumbbell fa-4x"></i><br />Strength training</a>
+        </div>
+        <div class="col-12 col-md-6">
+            <a class="btn btn-primary btn-lg" href="/enduranceworkout" role="button"><i class="fas fa-running fa-4x"></i><br />Endurance workout</a>
+        </div>
+    </div>
 </div>
 {{end}}
 {{define "scripts"}}

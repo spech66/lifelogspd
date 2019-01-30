@@ -2,7 +2,7 @@
     Weight
 {{end}}
 {{define "body"}}
-<div class="container-fluid text-center">
+<div class="container text-center">
     <h1>Weight</h1>
 
     <div class="alert alert-success" role="alert" data-bind="visible: successMessage().length > 0">
@@ -20,15 +20,18 @@
             <label for="heightInput">Height</label>
             <input name="height" type="number" step="0.1" min="40" max="200" class="form-control form-control-lg" id="heightInput" placeholder="xxx.x in cm" data-bind="value: newMeasurementHeight" required>
         </div>
-        <button type="submit" class="btn btn-primary btn-lg"><i class="fas fa-plus-square fa-8x"></i><br />Submit</button>
+        <div class="row">
+            <div class="col-6">
+                <button type="submit" class="btn btn-primary btn-lg"><i class="fas fa-plus-square fa-4x"></i><br />Submit</button>
+            </div>
+            <div class="col-6">
+                <a class="btn btn-success btn-lg" href="/weightgraph" role="button"><i class="fas fa-chart-bar fa-4x"></i><br />Graph</a>
+            </div>
+        </div>
     </form>
 
     <p>
-        <a class="btn btn-success btn-lg" href="/weightgraph" role="button"><i class="fas fa-chart-bar fa-4x"></i><br />Graph</a>
-    </p>
-
-    <p>
-        <a class="btn btn-secondary btn-lg" href="/" role="button"><i class="fas fa-arrow-circle-left fa-4x"></i><br />Back</a>
+        <a class="btn btn-secondary btn-lg" href="/" role="button"><i class="fas fa-arrow-circle-left fa-2x"></i><br />Back</a>
     </p>
 
     <table class="table table-striped">
