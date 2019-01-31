@@ -4,9 +4,11 @@ import (
 	"encoding/csv"
 	"encoding/json"
 	"fmt"
+	"io/ioutil"
 	"net/http"
 	"os"
 	"strconv"
+	"strings"
 	"time"
 
 	"github.com/labstack/echo"
@@ -60,12 +62,17 @@ func PostWeight() echo.HandlerFunc {
 // DeleteWeight deletes weight data
 func DeleteWeight() echo.HandlerFunc {
 	return func(c echo.Context) (err error) {
-		date := c.QueryParam("date")
-		fmt.Println("Date ", date)
-		return c.JSONBlob(
-			http.StatusOK,
-			[]byte(`[{ "date": "20190101", "weight": "88.0", "height": "192" }, { "date": "20190110", "weight": "89.0", "height": "192" }]`),
-		)
+		date := c.Param("date")
+		fmt.Println("Delete by date", date)
+		if date == "" {
+			return c.JSONBlob(http.StatusBadRequest, []byte(`[]`))
+		}
+
+		deleted := deleteLine(c.Get("config").(*helper.Config).WeightPath, date)
+		if !deleted {
+			return c.JSONBlob(http.StatusNotFound, []byte(`[]`))
+		}
+		return c.JSONBlob(http.StatusOK, []byte(`[]`))
 	}
 }
 
@@ -118,6 +125,37 @@ func addData(filename string, data *Measurement) {
 	w.Comma = ';'
 	w.Write([]string{data.Date, data.Height, data.Weight, data.Bmi, data.BmiOverweight, data.BmiUnderweight})
 	w.Flush()
+}
+
+func deleteLine(filename string, startText string) bool {
+	f, err := ioutil.ReadFile(filename)
+	if err != nil {
+		panic(err)
+	}
+
+	lines := strings.Split(string(f), "\n")
+
+	newLines := lines[:]
+	found := false
+	for i, line := range lines {
+		if strings.HasPrefix(line, startText) {
+			newLines = append(newLines[:i], newLines[i+1:]...)
+			found = true
+			break
+		}
+	}
+
+	if !found {
+		return false
+	}
+
+	output := strings.Join(newLines, "\n")
+	err = ioutil.WriteFile(filename, []byte(output), 0644)
+	if err != nil {
+		panic(err)
+	}
+
+	return true
 }
 
 func dataToJSON(measurements *[]Measurement) []byte {

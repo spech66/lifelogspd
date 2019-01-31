@@ -6,11 +6,17 @@ This daemon is intend for use in a local network. For securing the access use a 
 
 ## Status
 
-* **Weight:** Mostly working except for deletion of data :chart_with_upwards_trend:
-* **Weight Chart:** Working :heavy_check_mark: (Lines for good/bad bmi/weight might be added in the future)
-* **Journal:** Work in progress :construction:
+* **Weight:** Working :heavy_check_mark:
+* **Weight Chart:** Working :heavy_check_mark:
+* **Journal:** Work in progress :chart_with_upwards_trend:
 * **Strength training:** Work in progress :construction:
 * **Endurance workout:** Work in progress :construction:
+
+### Improvements
+
+* Weight Graph: Baselines for good/bad bmi/weight
+
+## Screenshots
 
 ![Start](https://raw.githubusercontent.com/spech66/lifelogspd/master/_screenshots/001_start.png "Start")
 ![Weight](https://raw.githubusercontent.com/spech66/lifelogspd/master/_screenshots/002_weight_01.png "Weight")
