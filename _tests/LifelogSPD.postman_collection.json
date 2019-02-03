@@ -1,0 +1,122 @@
+{
+	"info": {
+		"_postman_id": "c0f41c79-b9d0-481a-b8e7-99d891e78646",
+		"name": "LifelogSPD",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "weight",
+			"item": []
+		},
+		{
+			"name": "journal",
+			"item": [
+				{
+					"name": "Get All",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": ""
+						},
+						"url": {
+							"raw": "localhost:8066/api/journal",
+							"host": [
+								"localhost"
+							],
+							"port": "8066",
+							"path": [
+								"api",
+								"journal"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Post 2019-01-01",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": ""
+						},
+						"url": {
+							"raw": "localhost:8066/api/journal?date=2019-01-01&text=Happy new year!",
+							"host": [
+								"localhost"
+							],
+							"port": "8066",
+							"path": [
+								"api",
+								"journal"
+							],
+							"query": [
+								{
+									"key": "date",
+									"value": "2019-01-01"
+								},
+								{
+									"key": "text",
+									"value": "Happy new year!"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get 2019-01-01",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": ""
+						},
+						"url": {
+							"raw": "localhost:8066/api/journal/2019-01-01",
+							"host": [
+								"localhost"
+							],
+							"port": "8066",
+							"path": [
+								"api",
+								"journal",
+								"2019-01-01"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Delete 2019-01-01",
+					"request": {
+						"method": "DELETE",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": ""
+						},
+						"url": {
+							"raw": "localhost:8066/api/journal/2019-01-01",
+							"host": [
+								"localhost"
+							],
+							"port": "8066",
+							"path": [
+								"api",
+								"journal",
+								"2019-01-01"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		}
+	]
+}

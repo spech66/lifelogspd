@@ -27,6 +27,9 @@ type JournalList struct {
 func GetJournal() echo.HandlerFunc {
 	return func(c echo.Context) (err error) {
 		journalList := journalReadAllData(c.Get("config").(*helper.Config).JournalPath)
+		if journalList == nil {
+			return c.JSONBlob(http.StatusOK, []byte(`[]`))
+		}
 		jsonData := journalListDataToJSON(&journalList)
 		return c.JSONBlob(http.StatusOK, jsonData)
 	}
@@ -116,7 +119,7 @@ func journalReadAllData(path string) []JournalList {
 }
 
 func journalReadData(path string, date string) Journal {
-	filename := filepath.Join(path, date[:3], date)
+	filename := filepath.Join(path, date[:4], date)
 	fmt.Println("Journal data from", filename)
 
 	content, err := ioutil.ReadFile(filename)
@@ -137,7 +140,7 @@ func journalReadData(path string, date string) Journal {
 }
 
 func journalAddData(path string, data *Journal) {
-	yearPath := filepath.Join(path, data.Date[:3])
+	yearPath := filepath.Join(path, data.Date[:4])
 	filename := filepath.Join(yearPath, data.Date)
 	fmt.Println("Write journal at", filename)
 
@@ -163,14 +166,16 @@ func journalAddData(path string, data *Journal) {
 }
 
 func journalDeleteFile(path string, date string) bool {
-	filename := filepath.Join(path, date[:3], date)
+	filename := filepath.Join(path, date[:4], date)
 	fmt.Println("Delete journal", filename)
 
-	err := os.Remove(path)
+	err := os.Remove(filename)
 	if err != nil {
+		fmt.Println("Delete journal did not find file", filename)
 		return false
 	}
 
+	fmt.Println("Deleted journal", filename)
 	return true
 }
 
