@@ -4,11 +4,114 @@
 {{define "body"}}
 <div class="container text-center">
     <h1>Journal</h1>
+
+    <div class="alert alert-success" role="alert" data-bind="visible: successMessage().length > 0">
+        Saved successfully.
+    </div>
+    <div class="alert alert-danger" role="alert" data-bind="visible: errorMessage().length > 0, text: errorMessage">
+    </div>
+
+    <form data-bind="submit: addJournal">
+        <div class="form-group">
+            <textarea name="text" class="form-control" rows="3" data-bind="value: newJournalText" required></textarea>
+        </div>
+        <div class="form-group">
+            <input name="date" type="date" class="form-control form-control" data-bind="value: newJournalDate" required>
+        </div>
+        <div class="row">
+            <div class="col-12">
+                <button type="submit" class="btn btn-primary btn-lg"><i class="fas fa-plus-square fa-4x"></i><br />Submit</button>
+            </div>
+            <!--<div class="col-6">
+                <a class="btn btn-success btn-lg" href="/journalmd" role="button"><i class="fas fa-chart-bar fa-4x"></i><br />Preview</a>
+            </div>-->
+        </div>
+    </form>
+
     <p>
         <a class="btn btn-secondary btn-lg" href="/" role="button"><i class="fas fa-arrow-circle-left fa-2x"></i><br />Back</a>
     </p>
+
+    <table class="table table-striped">
+        <thead>
+            <tr>
+                <th scope="col">Date</th>
+                <th scope="col"></th>
+            </tr>
+        </thead>
+        <tbody data-bind="foreach: journals, visible: journals().length > 0">
+            <tr>
+                <th scope="row"><a href="#" data-bind="click: $parent.editJournal"><span data-bind="text: date"></span></a></th>
+                <td><a href="#" data-bind="click: $parent.removeJournal"><i class="fas fa-trash fa-2x"></i></a></td>
+            </tr>
+        </tbody>
+    </table>
 </div>
 {{end}}
 {{define "scripts"}}
+<script>
+function Journal(data) {
+    this.date = ko.observable(data.date);
+    this.text = ko.observable(data.text);
+}
+
+function JournalListViewModel() {
+    // Data
+    var self = this;
+    self.successMessage = ko.observable("");
+    self.errorMessage = ko.observable("");
+    self.journals = ko.observableArray([]);
+    self.newJournalDate = ko.observable("");
+    self.newJournalText = ko.observable("");
+
+    self.addJournal = function() {
+        self.successMessage("");
+
+        $.post("/api/journal", {
+            date: self.newJournalDate(), text: self.newJournalText()
+        })
+        .done(function(data) {
+            data = data[0] // array to value
+            self.successMessage(data.date);
+            
+            if(self.journals().filter(sel => sel.date() === data.date).length === 0) {
+               self.journals.unshift(new Journal(data));
+            }
+
+            self.newJournalDate(data.date);
+            self.newJournalText(data.text);
+        })
+        .fail(function (jqXHR, textStatus, error) {
+            self.errorMessage("Post error: " + error);
+        });
+    }
+
+    self.editJournal = function(journal) {
+        $.getJSON("/api/journal/" + journal.date(), function(data) {
+            var journalsData = $.map(data, function(item) { return new Journal(item) });
+            self.newJournalDate(journalsData[0].date());
+            self.newJournalText(journalsData[0].text());
+        });
+    }
+
+    self.removeJournal = function() {
+    }
+
+    // Load initial state from server, convert it to Journal instances, then populate self.journals
+    $.getJSON("/api/journal", function(data) {
+        data = data.sort((a, b) => (a.date > b.date) ? -1 : ((b.date > a.date) ? 1 : 0)); // Descending
+        var mappedJournals = $.map(data, function(item) { return new Journal(item) });
+        self.journals(mappedJournals);
+    });
+
+    // Load todays journal = all methods and the date input will use the YYYY-MM-DD Format
+    this.editJournal(new Journal({ date: moment().format('YYYY-MM-DD'), text: "" }));
+}
+
+$(function () {
+    ko.applyBindings(new JournalListViewModel());
+});
+</script>
+</script>
 {{end}}
 
