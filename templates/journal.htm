@@ -11,16 +11,14 @@
     <div class="alert alert-danger" role="alert" data-bind="visible: errorMessage().length > 0, text: errorMessage">
     </div>
 
-    <form data-bind="submit: addJournal">
+    <form data-bind="submit: addJournal">   
+        <span data-bind="text: newJournalDate"></span>
         <div class="form-group">
-            <textarea name="text" class="form-control" rows="3" data-bind="value: newJournalText" required></textarea>
-        </div>
-        <div class="form-group">
-            <input name="date" type="date" class="form-control form-control" data-bind="value: newJournalDate" required>
+            <textarea name="text" class="form-control" rows="3" data-bind="value: newJournalText" required style="min-height: 24em"></textarea>
         </div>
         <div class="row">
             <div class="col-12">
-                <button type="submit" class="btn btn-primary btn-lg"><i class="fas fa-plus-square fa-4x"></i><br />Submit</button>
+                <button type="submit" class="btn btn-primary btn-lg"><i class="fas fa-save fa-4x"></i><br />Save</button>
             </div>
             <!--<div class="col-6">
                 <a class="btn btn-success btn-lg" href="/journalmd" role="button"><i class="fas fa-chart-bar fa-4x"></i><br />Preview</a>
@@ -39,11 +37,17 @@
                 <th scope="col"></th>
             </tr>
         </thead>
-        <tbody data-bind="foreach: journals, visible: journals().length > 0">
+        <tbody>
             <tr>
-                <th scope="row"><a href="#" data-bind="click: $parent.editJournal"><span data-bind="text: date"></span></a></th>
-                <td><a href="#" data-bind="click: $parent.removeJournal"><i class="fas fa-trash fa-2x"></i></a></td>
+                <td scope="row"><input name="adddate" type="date" class="form-control form-control" data-bind="value: addJournalDate"></td>
+                <td><a href="#" data-bind="click: addJournalByDate"><i class="fas fa-plus-square fa-2x"></i></a></td>
             </tr>
+            <!-- ko foreach: journals -->
+                <tr>
+                    <td scope="row"><a href="#" data-bind="click: $parent.editJournal"><span data-bind="text: date"></span></a></td>
+                    <td><a href="#" data-bind="click: $parent.removeJournal"><i class="fas fa-trash fa-2x"></i></a></td>
+                </tr>
+            <!-- /ko -->
         </tbody>
     </table>
 </div>
@@ -63,6 +67,7 @@ function JournalListViewModel() {
     self.journals = ko.observableArray([]);
     self.newJournalDate = ko.observable("");
     self.newJournalText = ko.observable("");
+    self.addJournalDate = ko.observable(moment().format('YYYY-MM-DD')); // Edit custom/not existing date
 
     self.addJournal = function() {
         self.successMessage("");
@@ -94,7 +99,21 @@ function JournalListViewModel() {
         });
     }
 
-    self.removeJournal = function() {
+    self.removeJournal = function(journal) {
+        $.ajax({
+            url: '/api/journal/' + journal.date(),
+            type: 'DELETE',
+        })
+        .done(function(data) {
+            self.journals.destroy(journal);
+        })
+        .fail(function (jqXHR, textStatus, error) {
+            self.errorMessage("Delete error: " + error);
+        });
+    }
+
+    self.addJournalByDate = function() {
+        this.editJournal(new Journal({ date: self.addJournalDate(), text: "" }));
     }
 
     // Load initial state from server, convert it to Journal instances, then populate self.journals

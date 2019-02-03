@@ -8,8 +8,8 @@ This daemon is intend for use in a local network. For securing the access use a 
 
 * **Weight:** Working :heavy_check_mark:
 * **Weight Chart:** Working :heavy_check_mark:
-* **Journal:** Work in progress :chart_with_upwards_trend:
-* **Strength training:** Work in progress :construction:
+* **Journal:** Working :heavy_check_mark:
+* **Strength training:** Work in progress :chart_with_upwards_trend:
 * **Endurance workout:** Work in progress :construction:
 
 ### Improvements
@@ -21,7 +21,6 @@ This daemon is intend for use in a local network. For securing the access use a 
 ![Start](https://raw.githubusercontent.com/spech66/lifelogspd/master/_screenshots/001_start.png "Start")
 ![Weight](https://raw.githubusercontent.com/spech66/lifelogspd/master/_screenshots/002_weight_01.png "Weight")
 ![Weight Graph](https://raw.githubusercontent.com/spech66/lifelogspd/master/_screenshots/002_weight_02.png "Weight Graph")
-
 
 ## nginx reverse proxy with basic auth
 
