@@ -7,8 +7,9 @@ import (
 
 // Config holds all configuration data
 type Config struct {
-	WeightPath    string `json:"weightdata"`
+	WeightData    string `json:"weightdata"`
 	DefaultHeight string `json:"defaultheight"`
+	JournalPath   string `json:"journalpath"`
 }
 
 // GetConfig to read config from json

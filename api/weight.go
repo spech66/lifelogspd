@@ -28,8 +28,8 @@ type Measurement struct {
 // GetWeight returns all weight data
 func GetWeight() echo.HandlerFunc {
 	return func(c echo.Context) (err error) {
-		measurements := readAllData(c.Get("config").(*helper.Config).WeightPath)
-		jsonData := dataToJSON(&measurements)
+		measurements := weightReadAllData(c.Get("config").(*helper.Config).WeightData)
+		jsonData := weightDataToJSON(&measurements)
 		return c.JSONBlob(http.StatusOK, jsonData)
 	}
 }
@@ -53,8 +53,8 @@ func PostWeight() echo.HandlerFunc {
 		measurement.Bmi = strconv.FormatFloat(bmi, 'f', -1, 64)
 		fmt.Println(measurement)
 
-		addData(c.Get("config").(*helper.Config).WeightPath, &measurement)
-		jsonData := dataToJSON(&[]Measurement{measurement})
+		weightAddData(c.Get("config").(*helper.Config).WeightData, &measurement)
+		jsonData := weightDataToJSON(&[]Measurement{measurement})
 		return c.JSONBlob(http.StatusOK, jsonData)
 	}
 }
@@ -68,7 +68,7 @@ func DeleteWeight() echo.HandlerFunc {
 			return c.JSONBlob(http.StatusBadRequest, []byte(`[]`))
 		}
 
-		deleted := deleteLine(c.Get("config").(*helper.Config).WeightPath, date)
+		deleted := weightDeleteLine(c.Get("config").(*helper.Config).WeightData, date)
 		if !deleted {
 			return c.JSONBlob(http.StatusNotFound, []byte(`[]`))
 		}
@@ -76,7 +76,7 @@ func DeleteWeight() echo.HandlerFunc {
 	}
 }
 
-func readAllData(filename string) []Measurement {
+func weightReadAllData(filename string) []Measurement {
 	fmt.Println("Weight data from", filename)
 
 	f, err := os.Open(filename)
@@ -112,7 +112,7 @@ func readAllData(filename string) []Measurement {
 	return measurements
 }
 
-func addData(filename string, data *Measurement) {
+func weightAddData(filename string, data *Measurement) {
 	fmt.Println("Weight data to", filename)
 
 	f, err := os.OpenFile(filename, os.O_WRONLY|os.O_CREATE|os.O_APPEND, 0644)
@@ -127,7 +127,7 @@ func addData(filename string, data *Measurement) {
 	w.Flush()
 }
 
-func deleteLine(filename string, startText string) bool {
+func weightDeleteLine(filename string, startText string) bool {
 	f, err := ioutil.ReadFile(filename)
 	if err != nil {
 		panic(err)
@@ -158,7 +158,7 @@ func deleteLine(filename string, startText string) bool {
 	return true
 }
 
-func dataToJSON(measurements *[]Measurement) []byte {
+func weightDataToJSON(measurements *[]Measurement) []byte {
 	var jsonData []byte
 	var err error
 	jsonData, err = json.Marshal(&measurements)

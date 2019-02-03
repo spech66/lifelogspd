@@ -76,6 +76,11 @@ func Init(config *helper.Config) *echo.Echo {
 		//apiGroup.GET("/weight/:date", api.GetWeight())
 		apiGroup.POST("/weight", api.PostWeight())
 		apiGroup.DELETE("/weight/:date", api.DeleteWeight())
+
+		apiGroup.GET("/journal", api.GetJournal())
+		apiGroup.GET("/journal/:date", api.GetJournalByDate())
+		apiGroup.POST("/journal", api.PostJournal())
+		apiGroup.DELETE("/journal/:date", api.DeleteJournal())
 	}
 
 	return e
