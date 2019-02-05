@@ -28,7 +28,7 @@ function Measurement(data) {
     this.height = data.height;
 }
 
-function generateChart(selDiv, chartTitle, chartColor, chartData) {
+function generateChart(selDiv, chartTitle, chartColor, chartColor2, chartData) {
     var ctx = document.getElementById(selDiv).getContext('2d');
 
     var myChart = new Chart(ctx, {
@@ -37,7 +37,7 @@ function generateChart(selDiv, chartTitle, chartColor, chartData) {
             datasets: [{
                 label: chartTitle,
                 borderColor: chartColor,
-                backgroundColor: chartColor,
+                backgroundColor: chartColor2,
                 data: chartData
             }]
         },
@@ -58,7 +58,14 @@ function generateChart(selDiv, chartTitle, chartColor, chartData) {
                         labelString: 'Date'
                     }
                 }]
-            }
+            },            
+            elements: { 
+                point: { 
+                    radius: 0,
+                    hitRadius: 10, 
+                    hoverRadius: 5
+                } 
+            } 
         }
     });
 }
@@ -89,10 +96,10 @@ $(function () {
                     y: sel.weight
                 }});
 
-        generateChart("weightChartShort", "2 Month", 'rgb(51, 153, 51)', result2Month);
-        generateChart("weightChartYear", "1 Year Weight", 'rgb(51, 153, 51)', result1Year);
-        generateChart("weightChartYearBmi", "1 Year BMI", 'rgb(51, 51, 153)', result1YearBmi);
-        generateChart("weightChartAll", "All", 'rgb(51, 153, 51)', resultAll);
+        generateChart("weightChartShort", "2 Month", '#7EB26D', '#7EB26D88', result2Month);
+        generateChart("weightChartYear", "1 Year Weight", '#7EB26D', '#7EB26D88', result1Year);
+        generateChart("weightChartYearBmi", "1 Year BMI", '#335d99','#335d9988', result1YearBmi);
+        generateChart("weightChartAll", "All", '#7EB26D', '#7EB26D88', resultAll);
     });
 });
 </script>
