@@ -7,7 +7,117 @@
 	"item": [
 		{
 			"name": "weight",
-			"item": []
+			"item": [
+				{
+					"name": "Get All",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": ""
+						},
+						"url": {
+							"raw": "localhost:8066/api/weight",
+							"host": [
+								"localhost"
+							],
+							"port": "8066",
+							"path": [
+								"api",
+								"weight"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Post 2019-01-01",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"id": "9b21e6a5-4ebe-40d5-ac50-86c75fd3db42",
+								"exec": [
+									"pm.test(\"extract date\", function () {\r",
+									"     pm.response.to.be.ok;\r",
+									"     pm.response.to.be.withBody;\r",
+									"     pm.response.to.be.json;\r",
+									"\r",
+									"    var jsonData = pm.response.json();\r",
+									"    var date = jsonData[0].date;\r",
+									"    console.log(date);\r",
+									"    pm.globals.set(\"postdate\", date);\r",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"name": "Content-Type",
+								"value": "application/x-www-form-urlencoded",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "urlencoded",
+							"urlencoded": [
+								{
+									"key": "height",
+									"value": "180",
+									"type": "text"
+								},
+								{
+									"key": "weight",
+									"value": "80",
+									"type": "text"
+								}
+							]
+						},
+						"url": {
+							"raw": "localhost:8066/api/weight",
+							"host": [
+								"localhost"
+							],
+							"port": "8066",
+							"path": [
+								"api",
+								"weight"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Delete 2019-01-01",
+					"request": {
+						"method": "DELETE",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": ""
+						},
+						"url": {
+							"raw": "localhost:8066/api/weight/{{postdate}}",
+							"host": [
+								"localhost"
+							],
+							"port": "8066",
+							"path": [
+								"api",
+								"weight",
+								"{{postdate}}"
+							]
+						}
+					},
+					"response": []
+				}
+			]
 		},
 		{
 			"name": "journal",
@@ -39,13 +149,31 @@
 					"name": "Post 2019-01-01",
 					"request": {
 						"method": "POST",
-						"header": [],
+						"header": [
+							{
+								"key": "Content-Type",
+								"name": "Content-Type",
+								"value": "application/x-www-form-urlencoded",
+								"type": "text"
+							}
+						],
 						"body": {
-							"mode": "raw",
-							"raw": ""
+							"mode": "urlencoded",
+							"urlencoded": [
+								{
+									"key": "date",
+									"value": "2019-01-01",
+									"type": "text"
+								},
+								{
+									"key": "text",
+									"value": "Happy new year!",
+									"type": "text"
+								}
+							]
 						},
 						"url": {
-							"raw": "localhost:8066/api/journal?date=2019-01-01&text=Happy new year!",
+							"raw": "localhost:8066/api/journal",
 							"host": [
 								"localhost"
 							],
@@ -53,16 +181,6 @@
 							"path": [
 								"api",
 								"journal"
-							],
-							"query": [
-								{
-									"key": "date",
-									"value": "2019-01-01"
-								},
-								{
-									"key": "text",
-									"value": "Happy new year!"
-								}
 							]
 						}
 					},
