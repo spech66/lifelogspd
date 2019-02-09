@@ -9,8 +9,8 @@ This daemon is intend for use in a local network. For securing the access use a 
 * **Weight:** Working :heavy_check_mark:
 * **Weight Chart:** Working :heavy_check_mark:
 * **Journal:** Working :heavy_check_mark:
-* **Strength training:**  Api complete, Gui in progress :chart_with_upwards_trend:
-* **Endurance workout:** Api complete, Gui in progress :construction:
+* **Strength training:** Working :heavy_check_mark:
+* **Endurance workout:** Api complete, Gui in progress :chart_with_upwards_trend:
 
 ### Improvements
 
