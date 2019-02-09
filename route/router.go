@@ -82,17 +82,17 @@ func Init(config *helper.Config) *echo.Echo {
 		apiGroup.POST("/journal", api.PostJournal())
 		apiGroup.DELETE("/journal/:date", api.DeleteJournal())
 
-		//apiGroup.GET("/strengthtraining", api.GetJournal())
+		apiGroup.GET("/strengthtraining", api.GetStrengthtraining())
+		apiGroup.GET("/strengthtraining/:date", api.GetStrengthtrainingByDate())
+		apiGroup.POST("/strengthtraining", api.PostStrengthtraining())
+		apiGroup.DELETE("/strengthtraining/:date", api.DeleteStrengthtraining())
 		apiGroup.GET("/strengthtraining/exercises", api.GetStrengthtrainingExercises())
-		/*apiGroup.GET("/strengthtraining/:date", api.GetJournalByDate())
-		apiGroup.POST("/strengthtraining", api.PostJournal())
-		apiGroup.DELETE("/strengthtraining/:date", api.DeleteJournal())*/
 
-		//apiGroup.GET("/enduranceworkout", api.GetJournal())
+		apiGroup.GET("/enduranceworkout", api.GetEnduranceworkout())
+		apiGroup.GET("/enduranceworkout/:date", api.GetEnduranceworkoutByDate())
+		apiGroup.POST("/enduranceworkout", api.PostEnduranceworkout())
+		apiGroup.DELETE("/enduranceworkout/:date", api.DeleteEnduranceworkout())
 		apiGroup.GET("/enduranceworkout/exercises", api.GetEnduranceworkoutExercises())
-		/*apiGroup.GET("/enduranceworkout/:date", api.GetJournalByDate())
-		apiGroup.POST("/enduranceworkout", api.PostJournal())
-		apiGroup.DELETE("/enduranceworkout/:date", api.DeleteJournal())*/
 	}
 
 	return e

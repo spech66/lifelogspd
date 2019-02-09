@@ -235,6 +235,110 @@
 					"response": []
 				}
 			]
+		},
+		{
+			"name": "strengthtraining",
+			"item": [
+				{
+					"name": "Get All",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": ""
+						},
+						"url": {
+							"raw": "localhost:8066/api/strengthtraining",
+							"host": [
+								"localhost"
+							],
+							"port": "8066",
+							"path": [
+								"api",
+								"strengthtraining"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get All Exercises",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": ""
+						},
+						"url": {
+							"raw": "localhost:8066/api/strengthtraining/exercises",
+							"host": [
+								"localhost"
+							],
+							"port": "8066",
+							"path": [
+								"api",
+								"strengthtraining",
+								"exercises"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "enduranceworkout",
+			"item": [
+				{
+					"name": "Get All",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": ""
+						},
+						"url": {
+							"raw": "localhost:8066/api/enduranceworkout",
+							"host": [
+								"localhost"
+							],
+							"port": "8066",
+							"path": [
+								"api",
+								"enduranceworkout"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get All Exercises",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": ""
+						},
+						"url": {
+							"raw": "localhost:8066/api/enduranceworkout/exercises",
+							"host": [
+								"localhost"
+							],
+							"port": "8066",
+							"path": [
+								"api",
+								"enduranceworkout",
+								"exercises"
+							]
+						}
+					},
+					"response": []
+				}
+			]
 		}
 	]
 }
