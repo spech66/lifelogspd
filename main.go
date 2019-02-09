@@ -18,11 +18,13 @@ func init() {
 }
 
 func main() {
-	fmt.Println("LifelogSPDaemon")
+	fmt.Println("LifelogSP Daemon")
+	fmt.Println("================")
 	fmt.Println("Binding server to", flagBind)
-	fmt.Println("Reding config from", flagConfig)
+	fmt.Println("Reading config from", flagConfig)
 
 	config := helper.GetConfig(flagConfig)
+	// fmt.Println(config)
 
 	router := route.Init(&config)
 
