@@ -25,7 +25,36 @@ This daemon is intend for use in a local network. For securing the access use a 
 
 [More screenshots](https://github.com/spech66/lifelogspd/tree/master/_screenshots)
 
+## Build and run from source
+
+Make sure you have the [Go Programming Language](https://golang.org/) tools set up an ready.
+
+### Linux
+
+Checkout the code to your `GOPATH` directory, build the server and run it.
+
+```cmd
+go get github.com/spech66/lifelogspd
+cd $GOPATH/src/github.com/spech66/lifelogspd
+go build
+./lifelogspd -config example.config.json
+```
+
+### Windows
+
+Checkout the code to your `GOPATH` directory.
+
+```cmd
+go get github.com/spech66/lifelogspd
+cd %GOPATH%\src\github.com\spech66\lifelogspd
+go build
+lifelogspd.exe -config example.config.json
+```
+
 ## nginx reverse proxy with basic auth
+
+This daemon is intend for use in a local network. Make sure that the server port (default 8066) is not exposed to the internet.
+In case you want to host this deamon in the internet set up nginx as a revery proxy for it using basic authentication.
 
 ```bash
 sudo sh -c "echo -n 'admin:' >> /etc/nginx/.htpasswd"
