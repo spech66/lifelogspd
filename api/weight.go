@@ -1,11 +1,9 @@
 package api
 
 import (
-	"encoding/csv"
 	"fmt"
 	"io/ioutil"
 	"net/http"
-	"os"
 	"strconv"
 	"strings"
 	"time"
@@ -70,7 +68,8 @@ func PostWeight() echo.HandlerFunc {
 		measurement.Bmi = strconv.FormatFloat(bmi, 'f', -1, 64)
 		fmt.Println(measurement)
 
-		weightAddData(c.Get("config").(*helper.Config).WeightData, &measurement)
+		data := []string{measurement.Date, measurement.Height, measurement.Weight, measurement.Bmi, measurement.BmiOverweight, measurement.BmiUnderweight}
+		helper.SaveDataToCSV(c.Get("config").(*helper.Config).WeightData, data)
 		jsonData := helper.DataToJSON(&[]Measurement{measurement})
 		return c.JSONBlob(http.StatusOK, jsonData)
 	}
@@ -91,21 +90,6 @@ func DeleteWeight() echo.HandlerFunc {
 		}
 		return c.JSONBlob(http.StatusOK, []byte(`[]`))
 	}
-}
-
-func weightAddData(filename string, data *Measurement) {
-	fmt.Println("Weight data to", filename)
-
-	f, err := os.OpenFile(filename, os.O_WRONLY|os.O_CREATE|os.O_APPEND, 0644)
-	if err != nil {
-		panic(err)
-	}
-	defer f.Close()
-
-	w := csv.NewWriter(f)
-	w.Comma = ';'
-	w.Write([]string{data.Date, data.Height, data.Weight, data.Bmi, data.BmiOverweight, data.BmiUnderweight})
-	w.Flush()
 }
 
 func weightDeleteLine(filename string, startText string) bool {

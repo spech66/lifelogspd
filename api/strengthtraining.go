@@ -1,8 +1,10 @@
 package api
 
 import (
+	"fmt"
 	"net/http"
 	"strconv"
+	"time"
 
 	"github.com/labstack/echo"
 	"github.com/spech66/lifelogspd/helper"
@@ -26,9 +28,9 @@ func GetStrengthtraining() echo.HandlerFunc {
 		var strengthtrainings []Strengthtraining
 		firstLine := true
 		for _, line := range lines {
-			reps, _ := strconv.ParseInt(line[2], 0, 64)
+			reps, _ := strconv.ParseInt(line[2], 10, 64)
 			weight, _ := strconv.ParseFloat(line[3], 64)
-			rating, _ := strconv.ParseInt(line[5], 0, 64)
+			rating, _ := strconv.ParseInt(line[5], 10, 64)
 
 			data := Strengthtraining{
 				Date:     line[0],
@@ -59,7 +61,33 @@ func GetStrengthtrainingByDate() echo.HandlerFunc {
 // PostStrengthtraining saves new strength training data
 func PostStrengthtraining() echo.HandlerFunc {
 	return func(c echo.Context) (err error) {
-		return c.JSONBlob(http.StatusBadRequest, []byte(`[]`))
+		// beware that we drop the err here as this is only a internal server solution!
+		reps, _ := strconv.ParseInt(c.FormValue("reps"), 10, 64)
+		weight, _ := strconv.ParseFloat(c.FormValue("weight"), 64)
+		rating, _ := strconv.ParseInt(c.FormValue("rating"), 10, 64)
+
+		strengthtraining := Strengthtraining{
+			Date:     time.Now().Format("2006-01-02 15:04:05"),
+			Exercise: c.FormValue("exercise"),
+			Reps:     reps,
+			Weight:   weight,
+			Notes:    c.FormValue("notes"),
+			Rating:   rating,
+		}
+
+		fmt.Println(strengthtraining)
+
+		data := []string{
+			strengthtraining.Date,
+			strengthtraining.Exercise,
+			strconv.FormatInt(strengthtraining.Reps, 10),
+			strconv.FormatFloat(strengthtraining.Weight, 'f', -2, 64),
+			strengthtraining.Notes,
+			strconv.FormatInt(strengthtraining.Rating, 10),
+		}
+		helper.SaveDataToCSV(c.Get("config").(*helper.Config).StrengthtrainingData, data)
+		jsonData := helper.DataToJSON(&[]Strengthtraining{strengthtraining})
+		return c.JSONBlob(http.StatusOK, jsonData)
 	}
 }
 

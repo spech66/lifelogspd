@@ -1,8 +1,10 @@
 package api
 
 import (
+	"fmt"
 	"net/http"
 	"strconv"
+	"time"
 
 	"github.com/labstack/echo"
 	"github.com/spech66/lifelogspd/helper"
@@ -26,9 +28,9 @@ func GetEnduranceworkout() echo.HandlerFunc {
 		var enduranceworkouts []Enduranceworkout
 		firstLine := true
 		for _, line := range lines {
-			distance, _ := strconv.ParseInt(line[2], 0, 64)
-			duration, _ := strconv.ParseInt(line[3], 0, 64)
-			rating, _ := strconv.ParseInt(line[5], 0, 64)
+			distance, _ := strconv.ParseInt(line[2], 10, 64)
+			duration, _ := strconv.ParseInt(line[3], 10, 64)
+			rating, _ := strconv.ParseInt(line[5], 10, 64)
 
 			data := Enduranceworkout{
 				Date:     line[0],
@@ -59,7 +61,33 @@ func GetEnduranceworkoutByDate() echo.HandlerFunc {
 // PostEnduranceworkout saves new endurance workout data
 func PostEnduranceworkout() echo.HandlerFunc {
 	return func(c echo.Context) (err error) {
-		return c.JSONBlob(http.StatusBadRequest, []byte(`[]`))
+		// beware that we drop the err here as this is only a internal server solution!
+		distance, _ := strconv.ParseInt(c.FormValue("distance"), 10, 64)
+		duration, _ := strconv.ParseInt(c.FormValue("duration"), 10, 64)
+		rating, _ := strconv.ParseInt(c.FormValue("rating"), 10, 64)
+
+		enduranceworkout := Enduranceworkout{
+			Date:     time.Now().Format("2006-01-02 15:04:05"),
+			Exercise: c.FormValue("exercise"),
+			Distance: distance,
+			Duration: duration,
+			Notes:    c.FormValue("notes"),
+			Rating:   rating,
+		}
+
+		fmt.Println(enduranceworkout)
+
+		data := []string{
+			enduranceworkout.Date,
+			enduranceworkout.Exercise,
+			strconv.FormatInt(enduranceworkout.Distance, 10),
+			strconv.FormatInt(enduranceworkout.Duration, 10),
+			enduranceworkout.Notes,
+			strconv.FormatInt(enduranceworkout.Rating, 10),
+		}
+		helper.SaveDataToCSV(c.Get("config").(*helper.Config).EnduranceworkoutData, data)
+		jsonData := helper.DataToJSON(&[]Enduranceworkout{enduranceworkout})
+		return c.JSONBlob(http.StatusOK, jsonData)
 	}
 }
 
