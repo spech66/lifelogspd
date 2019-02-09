@@ -14,7 +14,7 @@
     <form data-bind="submit: addStrengthtraining">
         <div class="form-group">
             <label for="exerciseInput">Exercise</label>
-            <input name="exercise" type="text" class="form-control form-control-lg" id="exerciseInput" data-bind="value: newStrengthtrainingExercise" required>
+            <select name="exercise" id="exerciseInput" class="form-control form-control-lg" data-bind="options: exercisesValues, value: newStrengthtrainingExercise" required></select>
         </div>
         <div class="form-group">
             <label for="repsInput">Reps</label>
@@ -65,8 +65,11 @@
                 <td><span data-bind="text: reps"></span>x</td>
                 <td><span data-bind="text: weight"></span> kg</td>
                 <td><span data-bind="text: notes"></span></td>
-                <td><span data-bind="text: rating"></span></td>
-                <td><a href="#" data-bind="click: $parent.removeStrengthtraining"><i class="fas fa-trash fa-2x"></i></a></td>
+                <td><emoji-widget params="rating: rating"></emoji-widget></td>
+                <td>
+                    <a href="#" data-bind="click: $parent.cloneStrengthtraining"><i class="fas fa-clone fa-2x"></i></a>
+                    <a href="#" data-bind="click: $parent.removeStrengthtraining"><i class="fas fa-trash fa-2x"></i></a>
+                </td>
             </tr>
         </tbody>
     </table>
@@ -74,15 +77,13 @@
 {{end}}
 {{define "scripts"}}
 <script>
-var emojis = ['😠','😦','😑','😀','😍'];
-
 function Strengthtraining(data) {
     this.date = ko.observable(data.date);
     this.exercise = ko.observable(data.exercise);
     this.reps = ko.observable(data.reps);
     this.weight = ko.observable(parseFloat(data.weight).toFixed(2));
     this.notes = ko.observable(data.notes);
-    this.rating = ko.observable(data.rating > 0 && data.rating < 6 ? emojis[data.rating - 1] : data.rating);
+    this.rating = ko.observable(data.rating);
 }
 
 function StrengthtrainingListViewModel() {
@@ -91,6 +92,7 @@ function StrengthtrainingListViewModel() {
     self.successMessage = ko.observable("");
     self.errorMessage = ko.observable("");
     self.strengthtrainings = ko.observableArray([]);
+    self.exercisesValues = ko.observableArray([]);
     self.newStrengthtrainingExercise = ko.observable("");
     self.newStrengthtrainingReps = ko.observable("1");
     self.newStrengthtrainingWeight = ko.observable("");
@@ -135,12 +137,33 @@ function StrengthtrainingListViewModel() {
             self.errorMessage("Delete error: " + error);
         });
     };
+    self.cloneStrengthtraining = function(strengthtraining) {
+        self.newStrengthtrainingExercise(strengthtraining.exercise());
+        self.newStrengthtrainingReps(strengthtraining.reps());
+        self.newStrengthtrainingWeight(strengthtraining.weight());
+        self.newStrengthtrainingNotes(strengthtraining.notes());
+        self.newStrengthtrainingRating(strengthtraining.rating());
+    };
+
+    // Custom components
+    ko.components.register('emoji-widget', {
+        viewModel: function(params) {
+            var emojis = ['😠','😦','😑','😀','😍'];
+            this.emoji = params.rating() > 0 && params.rating() < 6 ? emojis[params.rating() - 1] : params.rating();
+        },
+        template: '<span data-bind="text: emoji"></span>'
+    });
 
     // Load initial state from server, convert it to Strengthtraining instances, then populate self.strengthtrainings
     $.getJSON("/api/strengthtraining", function(data) {
         data = data.sort((a, b) => (a.date > b.date) ? -1 : ((b.date > a.date) ? 1 : 0)); // Descending
         var mappedStrengthtrainings = $.map(data, function(item) { return new Strengthtraining(item) });
         self.strengthtrainings(mappedStrengthtrainings);
+    });
+
+    // Load exercises from the server
+    $.getJSON("/api/strengthtraining/exercises", function(data) {
+        self.exercisesValues(data);
     });
 }
 
