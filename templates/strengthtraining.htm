@@ -62,6 +62,18 @@ function StrengthtrainingListViewModel() {
     self.strengthtrainings = ko.observableArray([]);
 
     // Operations
+    self.removeStrengthtraining = function(strengthtraining) {
+        $.ajax({
+            url: '/api/strengthtraining/' + strengthtraining.date(),
+            type: 'DELETE',
+        })
+        .done(function(data) {
+            self.strengthtrainings.destroy(strengthtraining);
+        })
+        .fail(function (jqXHR, textStatus, error) {
+            self.errorMessage("Delete error: " + error);
+        });
+    };
 
     // Load initial state from server, convert it to Strengthtraining instances, then populate self.strengthtrainings
     $.getJSON("/api/strengthtraining", function(data) {

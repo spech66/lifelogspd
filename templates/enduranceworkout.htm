@@ -62,6 +62,18 @@ function EnduranceworkoutListViewModel() {
     self.enduranceworkouts = ko.observableArray([]);
 
     // Operations
+    self.removeEnduranceworkout = function(enduranceworkout) {
+        $.ajax({
+            url: '/api/enduranceworkout/' + enduranceworkout.date(),
+            type: 'DELETE',
+        })
+        .done(function(data) {
+            self.enduranceworkouts.destroy(enduranceworkout);
+        })
+        .fail(function (jqXHR, textStatus, error) {
+            self.errorMessage("Delete error: " + error);
+        });
+    };
 
     // Load initial state from server, convert it to Enduranceworkout instances, then populate self.enduranceworkouts
     $.getJSON("/api/enduranceworkout", function(data) {
