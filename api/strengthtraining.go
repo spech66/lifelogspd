@@ -51,12 +51,12 @@ func GetStrengthtraining() echo.HandlerFunc {
 	}
 }
 
-// GetStrengthtrainingByDate returns strength training data by date
+/*// GetStrengthtrainingByDate returns strength training data by date
 func GetStrengthtrainingByDate() echo.HandlerFunc {
 	return func(c echo.Context) (err error) {
 		return c.JSONBlob(http.StatusBadRequest, []byte(`[]`))
 	}
-}
+}*/
 
 // PostStrengthtraining saves new strength training data
 func PostStrengthtraining() echo.HandlerFunc {

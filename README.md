@@ -33,7 +33,7 @@ Make sure you have the [Go Programming Language](https://golang.org/) tools set 
 
 Checkout the code to your `GOPATH` directory, build the server and run it.
 
-```cmd
+```bash
 go get github.com/spech66/lifelogspd
 cd $GOPATH/src/github.com/spech66/lifelogspd
 go build

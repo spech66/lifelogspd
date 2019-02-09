@@ -4,11 +4,76 @@
 {{define "body"}}
 <div class="container text-center">
     <h1>Endurance workout</h1>
+
+    <div class="alert alert-success" role="alert" data-bind="visible: successMessage().length > 0">
+        Saved successfully.
+    </div>
+    <div class="alert alert-danger" role="alert" data-bind="visible: errorMessage().length > 0, text: errorMessage">
+    </div>
+
     <p>
         <a class="btn btn-secondary btn-lg" href="/" role="button"><i class="fas fa-arrow-circle-left fa-2x"></i><br />Back</a>
     </p>
+
+    <table class="table table-striped">
+        <thead>
+            <tr>
+                <th scope="col">Date</th>
+                <th scope="col">Exercise</th>
+                <th scope="col">Distance</th>
+                <th scope="col">Duration</th>
+                <th scope="col">Notes</th>
+                <th scope="col">Rating</th>
+                <th scope="col"></th>
+            </tr>
+        </thead>
+        <tbody data-bind="foreach: enduranceworkouts, visible: enduranceworkouts().length > 0">
+            <tr>
+                <th scope="row"><span data-bind="text: date"></span></th>
+                <td><span data-bind="text: exercise"></span></td>
+                <td><span data-bind="text: distance"></span></td>
+                <td><span data-bind="text: duration"></span></td>
+                <td><span data-bind="text: notes"></span></td>
+                <td><span data-bind="text: rating"></span></td>
+                <td><a href="#" data-bind="click: $parent.removeEnduranceworkout"><i class="fas fa-trash fa-2x"></i></a></td>
+            </tr>
+        </tbody>
+    </table>
 </div>
 {{end}}
 {{define "scripts"}}
+<script>
+var emojis = ['😠','😦','😑','😀','😍'];
+
+function Enduranceworkout(data) {
+    this.date = ko.observable(data.date);
+    this.exercise = ko.observable(data.exercise);
+    this.distance = ko.observable(data.distance > 0 ? data.distance + "m" : "-");
+    this.duration = ko.observable(moment.duration(data.duration, 'seconds').humanize());
+    this.notes = ko.observable(data.notes);
+    this.rating = ko.observable(data.rating > 0 && data.rating < 6 ? emojis[data.rating - 1] : data.rating);
+}
+
+function EnduranceworkoutListViewModel() {
+    // Data
+    var self = this;
+    self.successMessage = ko.observable("");
+    self.errorMessage = ko.observable("");
+    self.enduranceworkouts = ko.observableArray([]);
+
+    // Operations
+
+    // Load initial state from server, convert it to Enduranceworkout instances, then populate self.enduranceworkouts
+    $.getJSON("/api/enduranceworkout", function(data) {
+        data = data.sort((a, b) => (a.date > b.date) ? -1 : ((b.date > a.date) ? 1 : 0)); // Descending
+        var mappedEnduranceworkouts = $.map(data, function(item) { return new Enduranceworkout(item) });
+        self.enduranceworkouts(mappedEnduranceworkouts);
+    });
+}
+
+$(function () {
+    ko.applyBindings(new EnduranceworkoutListViewModel());
+});
+</script>
 {{end}}
 

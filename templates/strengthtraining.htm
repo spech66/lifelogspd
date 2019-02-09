@@ -4,10 +4,75 @@
 {{define "body"}}
 <div class="container text-center">
     <h1>Strength training</h1>
+
+    <div class="alert alert-success" role="alert" data-bind="visible: successMessage().length > 0">
+        Saved successfully.
+    </div>
+    <div class="alert alert-danger" role="alert" data-bind="visible: errorMessage().length > 0, text: errorMessage">
+    </div>
+
     <p>
         <a class="btn btn-secondary btn-lg" href="/" role="button"><i class="fas fa-arrow-circle-left fa-2x"></i><br />Back</a>
     </p>
+
+    <table class="table table-striped">
+        <thead>
+            <tr>
+                <th scope="col">Date</th>
+                <th scope="col">Exercise</th>
+                <th scope="col">Reps</th>
+                <th scope="col">Weight</th>
+                <th scope="col">Notes</th>
+                <th scope="col">Rating</th>
+                <th scope="col"></th>
+            </tr>
+        </thead>
+        <tbody data-bind="foreach: strengthtrainings, visible: strengthtrainings().length > 0">
+            <tr>
+                <th scope="row"><span data-bind="text: date"></span></th>
+                <td><span data-bind="text: exercise"></span></td>
+                <td><span data-bind="text: reps"></span>x</td>
+                <td><span data-bind="text: weight"></span> kg</td>
+                <td><span data-bind="text: notes"></span></td>
+                <td><span data-bind="text: rating"></span></td>
+                <td><a href="#" data-bind="click: $parent.removeStrengthtraining"><i class="fas fa-trash fa-2x"></i></a></td>
+            </tr>
+        </tbody>
+    </table>
 </div>
 {{end}}
 {{define "scripts"}}
+<script>
+var emojis = ['😠','😦','😑','😀','😍'];
+
+function Strengthtraining(data) {
+    this.date = ko.observable(data.date);
+    this.exercise = ko.observable(data.exercise);
+    this.reps = ko.observable(data.reps);
+    this.weight = ko.observable(parseFloat(data.weight).toFixed(2));
+    this.notes = ko.observable(data.notes);
+    this.rating = ko.observable(data.rating > 0 && data.rating < 6 ? emojis[data.rating - 1] : data.rating);
+}
+
+function StrengthtrainingListViewModel() {
+    // Data
+    var self = this;
+    self.successMessage = ko.observable("");
+    self.errorMessage = ko.observable("");
+    self.strengthtrainings = ko.observableArray([]);
+
+    // Operations
+
+    // Load initial state from server, convert it to Strengthtraining instances, then populate self.strengthtrainings
+    $.getJSON("/api/strengthtraining", function(data) {
+        data = data.sort((a, b) => (a.date > b.date) ? -1 : ((b.date > a.date) ? 1 : 0)); // Descending
+        var mappedStrengthtrainings = $.map(data, function(item) { return new Strengthtraining(item) });
+        self.strengthtrainings(mappedStrengthtrainings);
+    });
+}
+
+$(function () {
+    ko.applyBindings(new StrengthtrainingListViewModel());
+});
+</script>
 {{end}}

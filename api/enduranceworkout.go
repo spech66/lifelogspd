@@ -51,12 +51,12 @@ func GetEnduranceworkout() echo.HandlerFunc {
 	}
 }
 
-// GetEnduranceworkoutByDate returns endurance workout data by date
+/*// GetEnduranceworkoutByDate returns endurance workout data by date
 func GetEnduranceworkoutByDate() echo.HandlerFunc {
 	return func(c echo.Context) (err error) {
 		return c.JSONBlob(http.StatusBadRequest, []byte(`[]`))
 	}
-}
+}*/
 
 // PostEnduranceworkout saves new endurance workout data
 func PostEnduranceworkout() echo.HandlerFunc {

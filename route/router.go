@@ -73,7 +73,7 @@ func Init(config *helper.Config) *echo.Echo {
 	apiGroup := e.Group("/api")
 	{
 		apiGroup.GET("/weight", api.GetWeight())
-		//apiGroup.GET("/weight/:date", api.GetWeight())
+		//apiGroup.GET("/weight/:date", api.GetWeightByDate())
 		apiGroup.POST("/weight", api.PostWeight())
 		apiGroup.DELETE("/weight/:date", api.DeleteWeight())
 
@@ -83,13 +83,13 @@ func Init(config *helper.Config) *echo.Echo {
 		apiGroup.DELETE("/journal/:date", api.DeleteJournal())
 
 		apiGroup.GET("/strengthtraining", api.GetStrengthtraining())
-		apiGroup.GET("/strengthtraining/:date", api.GetStrengthtrainingByDate())
+		//apiGroup.GET("/strengthtraining/:date", api.GetStrengthtrainingByDate())
 		apiGroup.POST("/strengthtraining", api.PostStrengthtraining())
 		apiGroup.DELETE("/strengthtraining/:date", api.DeleteStrengthtraining())
 		apiGroup.GET("/strengthtraining/exercises", api.GetStrengthtrainingExercises())
 
 		apiGroup.GET("/enduranceworkout", api.GetEnduranceworkout())
-		apiGroup.GET("/enduranceworkout/:date", api.GetEnduranceworkoutByDate())
+		//apiGroup.GET("/enduranceworkout/:date", api.GetEnduranceworkoutByDate())
 		apiGroup.POST("/enduranceworkout", api.PostEnduranceworkout())
 		apiGroup.DELETE("/enduranceworkout/:date", api.DeleteEnduranceworkout())
 		apiGroup.GET("/enduranceworkout/exercises", api.GetEnduranceworkoutExercises())
