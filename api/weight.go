@@ -27,7 +27,25 @@ type Measurement struct {
 // GetWeight returns all weight data
 func GetWeight() echo.HandlerFunc {
 	return func(c echo.Context) (err error) {
-		measurements := weightReadAllData(c.Get("config").(*helper.Config).WeightData)
+		lines := helper.ReadAllDataFromCSV(c.Get("config").(*helper.Config).WeightData)
+
+		var measurements []Measurement
+		firstLine := true
+		for _, line := range lines {
+			data := Measurement{
+				Date:           line[0],
+				Height:         line[1],
+				Weight:         line[2],
+				Bmi:            line[3],
+				BmiOverweight:  line[4],
+				BmiUnderweight: line[5],
+			}
+			if !firstLine {
+				measurements = append(measurements, data)
+			}
+			firstLine = false
+		}
+
 		jsonData := helper.DataToJSON(&measurements)
 		return c.JSONBlob(http.StatusOK, jsonData)
 	}
@@ -73,42 +91,6 @@ func DeleteWeight() echo.HandlerFunc {
 		}
 		return c.JSONBlob(http.StatusOK, []byte(`[]`))
 	}
-}
-
-func weightReadAllData(filename string) []Measurement {
-	fmt.Println("Weight data from", filename)
-
-	f, err := os.Open(filename)
-	if err != nil {
-		panic(err)
-	}
-	defer f.Close()
-
-	r := csv.NewReader(f)
-	r.Comma = ';'
-	lines, err := r.ReadAll()
-	if err != nil {
-		panic(err)
-	}
-
-	var measurements []Measurement
-	firstLine := true
-	for _, line := range lines {
-		data := Measurement{
-			Date:           line[0],
-			Height:         line[1],
-			Weight:         line[2],
-			Bmi:            line[3],
-			BmiOverweight:  line[4],
-			BmiUnderweight: line[5],
-		}
-		if !firstLine {
-			measurements = append(measurements, data)
-		}
-		firstLine = false
-	}
-
-	return measurements
 }
 
 func weightAddData(filename string, data *Measurement) {

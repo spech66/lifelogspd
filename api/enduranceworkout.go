@@ -2,6 +2,7 @@ package api
 
 import (
 	"net/http"
+	"strconv"
 
 	"github.com/labstack/echo"
 	"github.com/spech66/lifelogspd/helper"
@@ -11,16 +12,40 @@ import (
 type Enduranceworkout struct {
 	Date     string `json:"date"`
 	Exercise string `json:"exercise"`
-	Distance int    `json:"distance"`
-	Duration int    `json:"duration"`
+	Distance int64  `json:"distance"`
+	Duration int64  `json:"duration"`
 	Notes    string `json:"notes"`
-	Rating   int    `json:"rating"`
+	Rating   int64  `json:"rating"`
 }
 
 // GetEnduranceworkout returns all endurance workout data
 func GetEnduranceworkout() echo.HandlerFunc {
 	return func(c echo.Context) (err error) {
-		return c.JSONBlob(http.StatusBadRequest, []byte(`[]`))
+		lines := helper.ReadAllDataFromCSV(c.Get("config").(*helper.Config).EnduranceworkoutData)
+
+		var enduranceworkouts []Enduranceworkout
+		firstLine := true
+		for _, line := range lines {
+			distance, _ := strconv.ParseInt(line[2], 0, 64)
+			duration, _ := strconv.ParseInt(line[3], 0, 64)
+			rating, _ := strconv.ParseInt(line[5], 0, 64)
+
+			data := Enduranceworkout{
+				Date:     line[0],
+				Exercise: line[1],
+				Distance: distance,
+				Duration: duration,
+				Notes:    line[4],
+				Rating:   rating,
+			}
+			if !firstLine {
+				enduranceworkouts = append(enduranceworkouts, data)
+			}
+			firstLine = false
+		}
+
+		jsonData := helper.DataToJSON(&enduranceworkouts)
+		return c.JSONBlob(http.StatusOK, jsonData)
 	}
 }
 
