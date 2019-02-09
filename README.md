@@ -15,6 +15,7 @@ This daemon is intend for use in a local network. For securing the access use a 
 ### Improvements
 
 * Weight Graph: Baselines for good/bad bmi/weight
+* Graphs for training
 
 ## Screenshots
 
