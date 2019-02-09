@@ -1,7 +1,6 @@
 package api
 
 import (
-	"encoding/json"
 	"fmt"
 	"io/ioutil"
 	"net/http"
@@ -30,7 +29,7 @@ func GetJournal() echo.HandlerFunc {
 		if journalList == nil {
 			return c.JSONBlob(http.StatusOK, []byte(`[]`))
 		}
-		jsonData := journalListDataToJSON(&journalList)
+		jsonData := helper.DataToJSON(&journalList)
 		return c.JSONBlob(http.StatusOK, jsonData)
 	}
 }
@@ -45,7 +44,7 @@ func GetJournalByDate() echo.HandlerFunc {
 		}
 
 		journal := journalReadData(c.Get("config").(*helper.Config).JournalPath, date)
-		jsonData := journalDataToJSON(&[]Journal{journal})
+		jsonData := helper.DataToJSON(&[]Journal{journal})
 		return c.JSONBlob(http.StatusOK, jsonData)
 	}
 }
@@ -63,7 +62,7 @@ func PostJournal() echo.HandlerFunc {
 		}
 
 		journalAddData(c.Get("config").(*helper.Config).JournalPath, &journal)
-		jsonData := journalDataToJSON(&[]Journal{journal})
+		jsonData := helper.DataToJSON(&[]Journal{journal})
 		return c.JSONBlob(http.StatusOK, jsonData)
 	}
 }
@@ -177,27 +176,4 @@ func journalDeleteFile(path string, date string) bool {
 
 	fmt.Println("Deleted journal", filename)
 	return true
-}
-
-func journalDataToJSON(journals *[]Journal) []byte {
-	var jsonData []byte
-	var err error
-	jsonData, err = json.Marshal(&journals)
-	if err != nil {
-		panic(err)
-	}
-
-	return jsonData
-}
-
-// TODO: generic?!
-func journalListDataToJSON(journalLists *[]JournalList) []byte {
-	var jsonData []byte
-	var err error
-	jsonData, err = json.Marshal(&journalLists)
-	if err != nil {
-		panic(err)
-	}
-
-	return jsonData
 }

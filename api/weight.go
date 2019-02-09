@@ -2,7 +2,6 @@ package api
 
 import (
 	"encoding/csv"
-	"encoding/json"
 	"fmt"
 	"io/ioutil"
 	"net/http"
@@ -29,7 +28,7 @@ type Measurement struct {
 func GetWeight() echo.HandlerFunc {
 	return func(c echo.Context) (err error) {
 		measurements := weightReadAllData(c.Get("config").(*helper.Config).WeightData)
-		jsonData := weightDataToJSON(&measurements)
+		jsonData := helper.DataToJSON(&measurements)
 		return c.JSONBlob(http.StatusOK, jsonData)
 	}
 }
@@ -54,7 +53,7 @@ func PostWeight() echo.HandlerFunc {
 		fmt.Println(measurement)
 
 		weightAddData(c.Get("config").(*helper.Config).WeightData, &measurement)
-		jsonData := weightDataToJSON(&[]Measurement{measurement})
+		jsonData := helper.DataToJSON(&[]Measurement{measurement})
 		return c.JSONBlob(http.StatusOK, jsonData)
 	}
 }
@@ -156,15 +155,4 @@ func weightDeleteLine(filename string, startText string) bool {
 	}
 
 	return true
-}
-
-func weightDataToJSON(measurements *[]Measurement) []byte {
-	var jsonData []byte
-	var err error
-	jsonData, err = json.Marshal(&measurements)
-	if err != nil {
-		panic(err)
-	}
-
-	return jsonData
 }

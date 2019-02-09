@@ -11,7 +11,7 @@ import (
 func GetEnduranceworkoutExercises() echo.HandlerFunc {
 	return func(c echo.Context) (err error) {
 		exercises := c.Get("config").(*helper.Config).EnduranceworkoutExercises
-		jsonData := helper.StringListToJSON(&exercises)
+		jsonData := helper.DataToJSON(&exercises)
 		return c.JSONBlob(http.StatusOK, jsonData)
 	}
 }
