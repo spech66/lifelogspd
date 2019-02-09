@@ -6,22 +6,25 @@ This daemon is intend for use in a local network. For securing the access use a 
 
 ## Status
 
-* **Weight:** Working :heavy_check_mark:
-* **Weight Chart:** Working :heavy_check_mark:
-* **Journal:** Working :heavy_check_mark:
-* **Strength training:** Working :heavy_check_mark:
-* **Endurance workout:** Api complete, Gui in progress :chart_with_upwards_trend:
+* **Weight:** :heavy_check_mark:
+* **Weight chart:** :heavy_check_mark:
+* **Journal:** :heavy_check_mark:
+* **Strength training:** :heavy_check_mark:
+* **Strength training chart:** Work in progress :chart_with_upwards_trend:
+* **Endurance workout:** :heavy_check_mark:
+* **Endurance workout chart:** Work in progress :chart_with_upwards_trend:
 
 ### Improvements
 
 * Weight Graph: Baselines for good/bad bmi/weight
-* Graphs for training
 
 ## Screenshots
 
 ![Start](https://raw.githubusercontent.com/spech66/lifelogspd/master/_screenshots/s_001_start.png "Start")
 ![Weight](https://raw.githubusercontent.com/spech66/lifelogspd/master/_screenshots/s_002_weight_01.png "Weight")
 ![Weight Graph](https://raw.githubusercontent.com/spech66/lifelogspd/master/_screenshots/s_002_weight_02.png "Weight Graph")
+![Weight Graph](https://raw.githubusercontent.com/spech66/lifelogspd/master/_screenshots/s_003_strengthtraining_01.png "Strength training")
+![Weight Graph](https://raw.githubusercontent.com/spech66/lifelogspd/master/_screenshots/s_004_enduranceworkout_01.png "Endurance workout")
 
 [More screenshots](https://github.com/spech66/lifelogspd/tree/master/_screenshots)
 
