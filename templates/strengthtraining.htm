@@ -11,6 +11,37 @@
     <div class="alert alert-danger" role="alert" data-bind="visible: errorMessage().length > 0, text: errorMessage">
     </div>
 
+    <form data-bind="submit: addStrengthtraining">
+        <div class="form-group">
+            <label for="exerciseInput">Exercise</label>
+            <input name="exercise" type="text" class="form-control form-control-lg" id="exerciseInput" data-bind="value: newStrengthtrainingExercise" required>
+        </div>
+        <div class="form-group">
+            <label for="repsInput">Reps</label>
+            <input name="reps" type="number" step="1" min="0" max="999" class="form-control form-control-lg" id="repsInput" data-bind="value: newStrengthtrainingReps" required>
+        </div>
+        <div class="form-group">
+            <label for="weightInput">Weight</label>
+            <input name="weight" type="number" step="0.25" min="0" max="999" class="form-control form-control-lg" id="weightInput" placeholder="xxx.xx in kg" data-bind="value: newStrengthtrainingWeight" required>
+        </div>
+        <div class="form-group">
+            <label for="notesInput">Notes</label>
+            <input name="notes" type="text" class="form-control form-control-lg" id="notesInput" data-bind="value: newStrengthtrainingNotes">
+        </div>
+        <div class="form-group">
+            <label for="ratingInput">Rating</label>
+            <input name="rating" type="number" step="1" min="1" max="5" class="form-control form-control-lg" id="ratingInput" data-bind="value: newStrengthtrainingRating">
+        </div>
+        <div class="row">
+            <div class="col-6">
+                <button type="submit" class="btn btn-primary btn-lg"><i class="fas fa-plus-square fa-4x"></i><br />Submit</button>
+            </div>
+            <!--<div class="col-6">
+                <a class="btn btn-success btn-lg" href="/strengthtraininggraph" role="button"><i class="fas fa-chart-bar fa-4x"></i><br />Graph</a>
+            </div>-->
+        </div>
+    </form>
+
     <p>
         <a class="btn btn-secondary btn-lg" href="/" role="button"><i class="fas fa-arrow-circle-left fa-2x"></i><br />Back</a>
     </p>
@@ -60,8 +91,38 @@ function StrengthtrainingListViewModel() {
     self.successMessage = ko.observable("");
     self.errorMessage = ko.observable("");
     self.strengthtrainings = ko.observableArray([]);
+    self.newStrengthtrainingExercise = ko.observable("");
+    self.newStrengthtrainingReps = ko.observable("1");
+    self.newStrengthtrainingWeight = ko.observable("");
+    self.newStrengthtrainingNotes = ko.observable("");
+    self.newStrengthtrainingRating = ko.observable("5");
 
     // Operations
+    self.addStrengthtraining = function() {
+        self.successMessage("");
+
+        $.post("/api/strengthtraining", {
+            exercise: self.newStrengthtrainingExercise(),
+            reps: self.newStrengthtrainingReps(),
+            weight: self.newStrengthtrainingWeight(),
+            notes: self.newStrengthtrainingNotes(),
+            rating: self.newStrengthtrainingRating()
+        })
+        .done(function(data) {
+            data = data[0] // array to value
+            self.successMessage(data.date);
+            
+            self.strengthtrainings.unshift(new Strengthtraining(data));
+            self.newStrengthtrainingExercise(data.exercise);
+            self.newStrengthtrainingReps(data.reps);
+            self.newStrengthtrainingWeight(data.weight);
+            self.newStrengthtrainingNotes("");
+            self.newStrengthtrainingRating(data.rating);
+        })
+        .fail(function (jqXHR, textStatus, error) {
+            self.errorMessage("Post error: " + error);
+        });
+    };
     self.removeStrengthtraining = function(strengthtraining) {
         $.ajax({
             url: '/api/strengthtraining/' + strengthtraining.date(),
