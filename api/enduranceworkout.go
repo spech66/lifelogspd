@@ -15,7 +15,7 @@ type Enduranceworkout struct {
 	Date     string `json:"date"`
 	Exercise string `json:"exercise"`
 	Distance int64  `json:"distance"`
-	Duration int64  `json:"duration"`
+	Duration string `json:"duration"`
 	Notes    string `json:"notes"`
 	Rating   int64  `json:"rating"`
 }
@@ -29,14 +29,13 @@ func GetEnduranceworkout() echo.HandlerFunc {
 		firstLine := true
 		for _, line := range lines {
 			distance, _ := strconv.ParseInt(line[2], 10, 64)
-			duration, _ := strconv.ParseInt(line[3], 10, 64)
 			rating, _ := strconv.ParseInt(line[5], 10, 64)
 
 			data := Enduranceworkout{
 				Date:     line[0],
 				Exercise: line[1],
 				Distance: distance,
-				Duration: duration,
+				Duration: line[3],
 				Notes:    line[4],
 				Rating:   rating,
 			}
@@ -63,14 +62,19 @@ func PostEnduranceworkout() echo.HandlerFunc {
 	return func(c echo.Context) (err error) {
 		// beware that we drop the err here as this is only a internal server solution!
 		distance, _ := strconv.ParseInt(c.FormValue("distance"), 10, 64)
-		duration, _ := strconv.ParseInt(c.FormValue("duration"), 10, 64)
 		rating, _ := strconv.ParseInt(c.FormValue("rating"), 10, 64)
+
+		// Add seconds component if not send by browser
+		duration := c.FormValue("duration")
+		if len(duration) == 5 {
+			duration = duration + ":00"
+		}
 
 		enduranceworkout := Enduranceworkout{
 			Date:     time.Now().Format("2006-01-02 15:04:05"),
 			Exercise: c.FormValue("exercise"),
 			Distance: distance,
-			Duration: duration,
+			Duration: c.FormValue("duration"),
 			Notes:    c.FormValue("notes"),
 			Rating:   rating,
 		}
@@ -81,7 +85,7 @@ func PostEnduranceworkout() echo.HandlerFunc {
 			enduranceworkout.Date,
 			enduranceworkout.Exercise,
 			strconv.FormatInt(enduranceworkout.Distance, 10),
-			strconv.FormatInt(enduranceworkout.Duration, 10),
+			enduranceworkout.Duration,
 			enduranceworkout.Notes,
 			strconv.FormatInt(enduranceworkout.Rating, 10),
 		}

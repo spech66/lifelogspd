@@ -11,6 +11,37 @@
     <div class="alert alert-danger" role="alert" data-bind="visible: errorMessage().length > 0, text: errorMessage">
     </div>
 
+    <form data-bind="submit: addEnduranceworkout">
+        <div class="form-group">
+            <label for="exerciseInput">Exercise</label>
+            <select name="exercise" id="exerciseInput" class="form-control form-control-lg" data-bind="options: exercisesValues, value: newEnduranceworkoutExercise" required></select>
+        </div>
+        <div class="form-group">
+            <label for="distanceInput">Distance</label>
+            <input name="distance" type="number" step="1" min="0" class="form-control form-control-lg" id="distanceInput" placeholder="xxx in m" data-bind="value: newEnduranceworkoutDistance" required>
+        </div>
+        <div class="form-group">
+            <label for="durationInput">Duration</label>
+            <input name="duration" type="time" step="1" class="form-control form-control-lg" id="durationInput" data-bind="value: newEnduranceworkoutDuration" required>
+        </div>
+        <div class="form-group">
+            <label for="notesInput">Notes</label>
+            <input name="notes" type="text" class="form-control form-control-lg" id="notesInput" data-bind="value: newEnduranceworkoutNotes">
+        </div>
+        <div class="form-group">
+            <label for="ratingInput">Rating</label>
+            <input name="rating" type="number" step="1" min="1" max="5" class="form-control form-control-lg" id="ratingInput" data-bind="value: newEnduranceworkoutRating">
+        </div>
+        <div class="row">
+            <div class="col-6">
+                <button type="submit" class="btn btn-primary btn-lg"><i class="fas fa-plus-square fa-4x"></i><br />Submit</button>
+            </div>
+            <!--<div class="col-6">
+                <a class="btn btn-success btn-lg" href="/enduranceworkoutgraph" role="button"><i class="fas fa-chart-bar fa-4x"></i><br />Graph</a>
+            </div>-->
+        </div>
+    </form>
+
     <p>
         <a class="btn btn-secondary btn-lg" href="/" role="button"><i class="fas fa-arrow-circle-left fa-2x"></i><br />Back</a>
     </p>
@@ -31,11 +62,14 @@
             <tr>
                 <th scope="row"><span data-bind="text: date"></span></th>
                 <td><span data-bind="text: exercise"></span></td>
-                <td><span data-bind="text: distance"></span></td>
-                <td><span data-bind="text: duration"></span></td>
+                <td><distance-widget params="distance: distance"></distance-widget></td>
+                <td><duration-widget params="duration: duration"></duration-widget></td>
                 <td><span data-bind="text: notes"></span></td>
-                <td><span data-bind="text: rating"></span></td>
-                <td><a href="#" data-bind="click: $parent.removeEnduranceworkout"><i class="fas fa-trash fa-2x"></i></a></td>
+                <td><emoji-widget params="rating: rating"></emoji-widget></td>
+                <td>
+                    <a href="#" data-bind="click: $parent.cloneEnduranceworkout"><i class="fas fa-clone fa-2x"></i></a>
+                    <a href="#" data-bind="click: $parent.removeEnduranceworkout"><i class="fas fa-trash fa-2x"></i></a>
+                </td>
             </tr>
         </tbody>
     </table>
@@ -43,15 +77,13 @@
 {{end}}
 {{define "scripts"}}
 <script>
-var emojis = ['😠','😦','😑','😀','😍'];
-
 function Enduranceworkout(data) {
     this.date = ko.observable(data.date);
     this.exercise = ko.observable(data.exercise);
-    this.distance = ko.observable(data.distance > 0 ? data.distance + "m" : "-");
-    this.duration = ko.observable(moment.duration(data.duration, 'seconds').humanize());
+    this.distance = ko.observable(data.distance);
+    this.duration = ko.observable(data.duration)
     this.notes = ko.observable(data.notes);
-    this.rating = ko.observable(data.rating > 0 && data.rating < 6 ? emojis[data.rating - 1] : data.rating);
+    this.rating = ko.observable(data.rating);
 }
 
 function EnduranceworkoutListViewModel() {
@@ -60,8 +92,39 @@ function EnduranceworkoutListViewModel() {
     self.successMessage = ko.observable("");
     self.errorMessage = ko.observable("");
     self.enduranceworkouts = ko.observableArray([]);
+    self.exercisesValues = ko.observableArray([]);
+    self.newEnduranceworkoutExercise = ko.observable("");
+    self.newEnduranceworkoutDistance = ko.observable("0");
+    self.newEnduranceworkoutDuration = ko.observable("00:00:00");
+    self.newEnduranceworkoutNotes = ko.observable("");
+    self.newEnduranceworkoutRating = ko.observable("5");
 
     // Operations
+    self.addEnduranceworkout = function() {
+        self.successMessage("");
+
+        $.post("/api/enduranceworkout", {
+            exercise: self.newEnduranceworkoutExercise(),
+            distance: self.newEnduranceworkoutDistance(),
+            duration: self.newEnduranceworkoutDuration(),
+            notes: self.newEnduranceworkoutNotes(),
+            rating: self.newEnduranceworkoutRating()
+        })
+        .done(function(data) {
+            data = data[0] // array to value
+            self.successMessage(data.date);
+            
+            self.enduranceworkouts.unshift(new Enduranceworkout(data));
+            self.newEnduranceworkoutExercise(data.exercise);
+            self.newEnduranceworkoutDistance(data.distance);
+            self.newEnduranceworkoutDuration(data.duration);
+            self.newEnduranceworkoutNotes("");
+            self.newEnduranceworkoutRating(data.rating);
+        })
+        .fail(function (jqXHR, textStatus, error) {
+            self.errorMessage("Post error: " + error);
+        });
+    };
     self.removeEnduranceworkout = function(enduranceworkout) {
         $.ajax({
             url: '/api/enduranceworkout/' + enduranceworkout.date(),
@@ -74,12 +137,57 @@ function EnduranceworkoutListViewModel() {
             self.errorMessage("Delete error: " + error);
         });
     };
+    self.cloneEnduranceworkout = function(enduranceworkout) {
+        self.newEnduranceworkoutExercise(enduranceworkout.exercise());
+        self.newEnduranceworkoutDistance(enduranceworkout.distance());
+        self.newEnduranceworkoutDuration(enduranceworkout.duration());
+        self.newEnduranceworkoutNotes(enduranceworkout.notes());
+        self.newEnduranceworkoutRating(enduranceworkout.rating());
+    };
+
+    // Custom components
+    ko.components.register('emoji-widget', {
+        viewModel: function(params) {
+            var emojis = ['😠','😦','😑','😀','😍'];
+            this.emoji = params.rating() > 0 && params.rating() < 6 ? emojis[params.rating() - 1] : params.rating();
+        },
+        template: '<span data-bind="text: emoji"></span>'
+    });
+    ko.components.register('distance-widget', {
+        viewModel: function(params) {
+             if(params.distance() === 0) {
+                 this.distance = "";
+             } else if(params.distance() % 1000 === 0) {
+                this.distance = (params.distance()/1000.0) + " km"
+             } else {
+                this.distance = params.distance() + " m"
+             }
+        },
+        template: '<span data-bind="text: distance"></span>'
+    });
+    ko.components.register('duration-widget', {
+        viewModel: function(params) {
+            this.orgDuration = params.duration;
+            if(params.duration() === "00:00:00" || params.duration() === 0) {
+                this.duration = "";
+            } else {
+                this.duration = moment.duration(params.duration()).humanize();
+            }
+        },
+        template: '<span data-bind="text: duration, visible: duration"></span><br />\
+                    <span data-bind="text: orgDuration, visible: duration" style="font-size: 0.8rem;"></span>'
+    });
 
     // Load initial state from server, convert it to Enduranceworkout instances, then populate self.enduranceworkouts
     $.getJSON("/api/enduranceworkout", function(data) {
         data = data.sort((a, b) => (a.date > b.date) ? -1 : ((b.date > a.date) ? 1 : 0)); // Descending
         var mappedEnduranceworkouts = $.map(data, function(item) { return new Enduranceworkout(item) });
         self.enduranceworkouts(mappedEnduranceworkouts);
+    });
+
+    // Load exercises from the server
+    $.getJSON("/api/enduranceworkout/exercises", function(data) {
+        self.exercisesValues(data);
     });
 }
 
