@@ -3,7 +3,9 @@ package helper
 import (
 	"encoding/csv"
 	"fmt"
+	"io/ioutil"
 	"os"
+	"strings"
 )
 
 // ReadAllDataFromCSV reads all fields to interface
@@ -40,4 +42,36 @@ func SaveDataToCSV(filename string, data []string) {
 	w.Comma = ';'
 	w.Write(data)
 	w.Flush()
+}
+
+// DeleteLineFromSCV deletes first line from CSV starting with startText
+func DeleteLineFromSCV(filename string, startText string) bool {
+	f, err := ioutil.ReadFile(filename)
+	if err != nil {
+		panic(err)
+	}
+
+	lines := strings.Split(string(f), "\n")
+
+	newLines := lines[:]
+	found := false
+	for i, line := range lines {
+		if strings.HasPrefix(line, startText) {
+			newLines = append(newLines[:i], newLines[i+1:]...)
+			found = true
+			break
+		}
+	}
+
+	if !found {
+		return false
+	}
+
+	output := strings.Join(newLines, "\n")
+	err = ioutil.WriteFile(filename, []byte(output), 0644)
+	if err != nil {
+		panic(err)
+	}
+
+	return true
 }

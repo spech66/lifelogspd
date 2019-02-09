@@ -2,10 +2,8 @@ package api
 
 import (
 	"fmt"
-	"io/ioutil"
 	"net/http"
 	"strconv"
-	"strings"
 	"time"
 
 	"github.com/labstack/echo"
@@ -84,41 +82,10 @@ func DeleteWeight() echo.HandlerFunc {
 			return c.JSONBlob(http.StatusBadRequest, []byte(`[]`))
 		}
 
-		deleted := weightDeleteLine(c.Get("config").(*helper.Config).WeightData, date)
+		deleted := helper.DeleteLineFromSCV(c.Get("config").(*helper.Config).WeightData, date)
 		if !deleted {
 			return c.JSONBlob(http.StatusNotFound, []byte(`[]`))
 		}
 		return c.JSONBlob(http.StatusOK, []byte(`[]`))
 	}
-}
-
-func weightDeleteLine(filename string, startText string) bool {
-	f, err := ioutil.ReadFile(filename)
-	if err != nil {
-		panic(err)
-	}
-
-	lines := strings.Split(string(f), "\n")
-
-	newLines := lines[:]
-	found := false
-	for i, line := range lines {
-		if strings.HasPrefix(line, startText) {
-			newLines = append(newLines[:i], newLines[i+1:]...)
-			found = true
-			break
-		}
-	}
-
-	if !found {
-		return false
-	}
-
-	output := strings.Join(newLines, "\n")
-	err = ioutil.WriteFile(filename, []byte(output), 0644)
-	if err != nil {
-		panic(err)
-	}
-
-	return true
 }

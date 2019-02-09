@@ -47,7 +47,7 @@
 									"    var jsonData = pm.response.json();\r",
 									"    var date = jsonData[0].date;\r",
 									"    console.log(date);\r",
-									"    pm.globals.set(\"postdate\", date);\r",
+									"    pm.globals.set(\"weightPostdate\", date);\r",
 									"});"
 								],
 								"type": "text/javascript"
@@ -103,7 +103,7 @@
 							"raw": ""
 						},
 						"url": {
-							"raw": "localhost:8066/api/weight/{{postdate}}",
+							"raw": "localhost:8066/api/weight/{{weightPostdate}}",
 							"host": [
 								"localhost"
 							],
@@ -111,7 +111,7 @@
 							"path": [
 								"api",
 								"weight",
-								"{{postdate}}"
+								"{{weightPostdate}}"
 							]
 						}
 					},
@@ -285,6 +285,107 @@
 						}
 					},
 					"response": []
+				},
+				{
+					"name": "Post 2019-01-01",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"id": "9b21e6a5-4ebe-40d5-ac50-86c75fd3db42",
+								"exec": [
+									"pm.test(\"extract date\", function () {\r",
+									"     pm.response.to.be.ok;\r",
+									"     pm.response.to.be.withBody;\r",
+									"     pm.response.to.be.json;\r",
+									"\r",
+									"    var jsonData = pm.response.json();\r",
+									"    var date = jsonData[0].date;\r",
+									"    console.log(date);\r",
+									"    pm.globals.set(\"strengthtrainingPostdate\", date);\r",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"name": "Content-Type",
+								"type": "text",
+								"value": "application/x-www-form-urlencoded"
+							}
+						],
+						"body": {
+							"mode": "urlencoded",
+							"urlencoded": [
+								{
+									"key": "exercise",
+									"value": "Typing Text",
+									"type": "text"
+								},
+								{
+									"key": "reps",
+									"value": "200",
+									"type": "text"
+								},
+								{
+									"key": "weight",
+									"value": "1.255555",
+									"type": "text"
+								},
+								{
+									"key": "notes",
+									"value": "My arms are as strong as Arnolds",
+									"type": "text"
+								},
+								{
+									"key": "rating",
+									"value": "5",
+									"type": "text"
+								}
+							]
+						},
+						"url": {
+							"raw": "localhost:8066/api/strengthtraining",
+							"host": [
+								"localhost"
+							],
+							"port": "8066",
+							"path": [
+								"api",
+								"strengthtraining"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Delete 2019-01-01",
+					"request": {
+						"method": "DELETE",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": ""
+						},
+						"url": {
+							"raw": "localhost:8066/api/strengthtraining/{{strengthtrainingPostdate}}",
+							"host": [
+								"localhost"
+							],
+							"port": "8066",
+							"path": [
+								"api",
+								"strengthtraining",
+								"{{strengthtrainingPostdate}}"
+							]
+						}
+					},
+					"response": []
 				}
 			]
 		},
@@ -333,6 +434,107 @@
 								"api",
 								"enduranceworkout",
 								"exercises"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Post 2019-01-01",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"id": "9b21e6a5-4ebe-40d5-ac50-86c75fd3db42",
+								"exec": [
+									"pm.test(\"extract date\", function () {\r",
+									"     pm.response.to.be.ok;\r",
+									"     pm.response.to.be.withBody;\r",
+									"     pm.response.to.be.json;\r",
+									"\r",
+									"    var jsonData = pm.response.json();\r",
+									"    var date = jsonData[0].date;\r",
+									"    console.log(date);\r",
+									"    pm.globals.set(\"enduranceworkoutPostdate\", date);\r",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"name": "Content-Type",
+								"type": "text",
+								"value": "application/x-www-form-urlencoded"
+							}
+						],
+						"body": {
+							"mode": "urlencoded",
+							"urlencoded": [
+								{
+									"key": "exercise",
+									"value": "Running away from bugs",
+									"type": "text"
+								},
+								{
+									"key": "distance",
+									"value": "42000",
+									"type": "text"
+								},
+								{
+									"key": "duration",
+									"value": "14400",
+									"type": "text"
+								},
+								{
+									"key": "notes",
+									"value": "Fear",
+									"type": "text"
+								},
+								{
+									"key": "rating",
+									"value": "2",
+									"type": "text"
+								}
+							]
+						},
+						"url": {
+							"raw": "localhost:8066/api/enduranceworkout",
+							"host": [
+								"localhost"
+							],
+							"port": "8066",
+							"path": [
+								"api",
+								"enduranceworkout"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Delete 2019-01-01",
+					"request": {
+						"method": "DELETE",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": ""
+						},
+						"url": {
+							"raw": "localhost:8066/api/enduranceworkout/{{enduranceworkoutPostdate}}",
+							"host": [
+								"localhost"
+							],
+							"port": "8066",
+							"path": [
+								"api",
+								"enduranceworkout",
+								"{{enduranceworkoutPostdate}}"
 							]
 						}
 					},

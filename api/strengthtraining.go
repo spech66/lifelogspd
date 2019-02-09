@@ -94,7 +94,17 @@ func PostStrengthtraining() echo.HandlerFunc {
 // DeleteStrengthtraining deletes strength training data
 func DeleteStrengthtraining() echo.HandlerFunc {
 	return func(c echo.Context) (err error) {
-		return c.JSONBlob(http.StatusBadRequest, []byte(`[]`))
+		date := c.Param("date")
+		fmt.Println("Delete by date", date)
+		if date == "" {
+			return c.JSONBlob(http.StatusBadRequest, []byte(`[]`))
+		}
+
+		deleted := helper.DeleteLineFromSCV(c.Get("config").(*helper.Config).StrengthtrainingData, date)
+		if !deleted {
+			return c.JSONBlob(http.StatusNotFound, []byte(`[]`))
+		}
+		return c.JSONBlob(http.StatusOK, []byte(`[]`))
 	}
 }
 
