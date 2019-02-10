@@ -6,6 +6,7 @@ import (
 	"net/http"
 	"os"
 	"path/filepath"
+	"strings"
 
 	"github.com/labstack/echo"
 	"github.com/spech66/lifelogspd/helper"
@@ -106,7 +107,7 @@ func journalReadAllData(path string) []JournalList {
 			for _, sf := range subPathFiles {
 				if !sf.IsDir() {
 					data := JournalList{
-						Date: sf.Name(),
+						Date: strings.Replace(sf.Name(), ".md", "", -1),
 					}
 					journals = append(journals, data)
 				}
@@ -118,7 +119,7 @@ func journalReadAllData(path string) []JournalList {
 }
 
 func journalReadData(path string, date string) Journal {
-	filename := filepath.Join(path, date[:4], date)
+	filename := filepath.Join(path, date[:4], date) + ".md"
 	fmt.Println("Journal data from", filename)
 
 	content, err := ioutil.ReadFile(filename)
@@ -140,13 +141,13 @@ func journalReadData(path string, date string) Journal {
 
 func journalAddData(path string, data *Journal) {
 	yearPath := filepath.Join(path, data.Date[:4])
-	filename := filepath.Join(yearPath, data.Date)
+	filename := filepath.Join(yearPath, data.Date) + ".md"
 	fmt.Println("Write journal at", filename)
 
 	// Check for YEAR directory
 	if _, err := os.Stat(yearPath); os.IsNotExist(err) {
 		fmt.Println("Create journal dir", yearPath)
-		err = os.MkdirAll(yearPath, os.ModeDir)
+		err = os.MkdirAll(yearPath, os.ModePerm)
 		if err != nil {
 			panic(err)
 		}
@@ -165,7 +166,7 @@ func journalAddData(path string, data *Journal) {
 }
 
 func journalDeleteFile(path string, date string) bool {
-	filename := filepath.Join(path, date[:4], date)
+	filename := filepath.Join(path, date[:4], date) + ".md"
 	fmt.Println("Delete journal", filename)
 
 	err := os.Remove(filename)
