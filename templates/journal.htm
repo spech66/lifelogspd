@@ -1,6 +1,9 @@
 {{define "title"}}
     Journal
 {{end}}
+{{define "header"}}
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/simplemde/latest/simplemde.min.css">
+{{end}}
 {{define "body"}}
 <div class="container text-center">
     <h1>Journal</h1>
@@ -11,10 +14,11 @@
     <div class="alert alert-danger" role="alert" data-bind="visible: errorMessage().length > 0, text: errorMessage">
     </div>
 
-    <form data-bind="submit: addJournal">   
+    <form data-bind="submit: addJournal" class="text-left">
         <span data-bind="text: newJournalDate"></span>
         <div class="form-group">
-            <textarea name="text" class="form-control" rows="3" data-bind="value: newJournalText" required style="min-height: 24em"></textarea>
+            <!--data-bind="value: newJournalText"-->
+            <textarea name="text" class="form-control" rows="3" style="min-height: 24em"></textarea>
         </div>
         <div class="row">
             <div class="col-12">
@@ -53,6 +57,7 @@
 </div>
 {{end}}
 {{define "scripts"}}
+<script src="https://cdn.jsdelivr.net/simplemde/latest/simplemde.min.js"></script>
 <script>
 function Journal(data) {
     this.date = ko.observable(data.date);
@@ -84,7 +89,8 @@ function JournalListViewModel() {
             }
 
             self.newJournalDate(data.date);
-            self.newJournalText(data.text);
+            //self.newJournalText(data.text);
+            self.simplemde.value(data.text);
         })
         .fail(function (jqXHR, textStatus, error) {
             self.errorMessage("Post error: " + error);
@@ -95,7 +101,8 @@ function JournalListViewModel() {
         $.getJSON("/api/journal/" + journal.date(), function(data) {
             var journalsData = $.map(data, function(item) { return new Journal(item) });
             self.newJournalDate(journalsData[0].date());
-            self.newJournalText(journalsData[0].text());
+            //self.newJournalText(journalsData[0].text());
+            self.simplemde.value(journalsData[0].text());
         });
     }
 
@@ -125,12 +132,16 @@ function JournalListViewModel() {
 
     // Load todays journal = all methods and the date input will use the YYYY-MM-DD Format
     this.editJournal(new Journal({ date: moment().format('YYYY-MM-DD'), text: "" }));
+    
+    self.simplemde = new SimpleMDE({ forceSync: true });
+    self.simplemde.codemirror.on("change", function() {
+        self.newJournalText(self.simplemde.value());
+    });
 }
 
 $(function () {
     ko.applyBindings(new JournalListViewModel());
 });
-</script>
 </script>
 {{end}}
 

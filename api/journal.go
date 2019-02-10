@@ -153,7 +153,7 @@ func journalAddData(path string, data *Journal) {
 		}
 	}
 
-	f, err := os.OpenFile(filename, os.O_WRONLY|os.O_CREATE, 0644)
+	f, err := os.Create(filename)
 	if err != nil {
 		panic(err)
 	}
@@ -163,6 +163,7 @@ func journalAddData(path string, data *Journal) {
 	if err != nil {
 		panic(err)
 	}
+	f.Sync()
 }
 
 func journalDeleteFile(path string, date string) bool {
