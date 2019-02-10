@@ -23,8 +23,9 @@ This daemon is intend for use in a local network. For securing the access use a 
 ![Start](https://raw.githubusercontent.com/spech66/lifelogspd/master/_screenshots/s_001_start.png "Start")
 ![Weight](https://raw.githubusercontent.com/spech66/lifelogspd/master/_screenshots/s_002_weight_01.png "Weight")
 ![Weight Graph](https://raw.githubusercontent.com/spech66/lifelogspd/master/_screenshots/s_002_weight_02.png "Weight Graph")
-![Weight Graph](https://raw.githubusercontent.com/spech66/lifelogspd/master/_screenshots/s_003_strengthtraining_01.png "Strength training")
-![Weight Graph](https://raw.githubusercontent.com/spech66/lifelogspd/master/_screenshots/s_004_enduranceworkout_01.png "Endurance workout")
+![Strength training](https://raw.githubusercontent.com/spech66/lifelogspd/master/_screenshots/s_003_strengthtraining_01.png "Strength training")
+![Endurance workout](https://raw.githubusercontent.com/spech66/lifelogspd/master/_screenshots/s_004_enduranceworkout_01.png "Endurance workout")
+![Journal](https://raw.githubusercontent.com/spech66/lifelogspd/master/_screenshots/s_005_journal_01.png "Journal")
 
 [More screenshots](https://github.com/spech66/lifelogspd/tree/master/_screenshots)
 
