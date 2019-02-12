@@ -10,7 +10,7 @@ This daemon is intend for use in a local network. For securing the access use a 
 * **Weight chart:** :heavy_check_mark:
 * **Journal:** :heavy_check_mark:
 * **Strength training:** :heavy_check_mark:
-* **Strength training chart:** Work in progress :chart_with_upwards_trend:
+* **Strength training chart:** :heavy_check_mark:
 * **Endurance workout:** :heavy_check_mark:
 * **Endurance workout chart:** Work in progress :chart_with_upwards_trend:
 

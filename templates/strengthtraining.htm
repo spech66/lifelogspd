@@ -63,7 +63,11 @@
         <tbody data-bind="foreach: strengthtrainings, visible: strengthtrainings().length > 0">
             <tr>
                 <th scope="row"><span data-bind="text: date"></span></th>
-                <td><span data-bind="text: exercise"></span></td>
+                <td>
+                    <a data-bind="attr: { href: '/strengthtraininggraph/' + exercise(), title: exercise }">
+                        <span data-bind="text: exercise"></span>
+                    </a>
+                </td>
                 <td><span data-bind="text: reps"></span>x</td>
                 <td><span data-bind="text: weight"></span> kg</td>
                 <td><span data-bind="text: notes"></span></td>

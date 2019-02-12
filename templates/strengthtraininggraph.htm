@@ -1,0 +1,82 @@
+{{define "title"}}
+    {{ .exercise }}
+{{end}}
+{{define "header"}}
+{{end}}
+{{define "body"}}
+<div class="container text-center">
+    <h1>{{ .exercise }}</h1>
+
+    <canvas id="strengthtrainingTotal"></canvas>
+    <canvas id="strengthtrainingWeight"></canvas>
+
+    <p>
+        <a class="btn btn-secondary btn-lg" href="/strengthtraining" role="button"><i class="fas fa-arrow-circle-left fa-2x"></i><br />Back</a>
+    </p>
+</div>
+{{end}}
+{{define "scripts"}}
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.7.3/Chart.min.js"></script>
+<script>
+function Strengthtraining(data) {
+    this.date = data.date;
+    this.exercise = data.exercise;
+    this.reps = data.reps;
+    this.weight = parseFloat(data.weight).toFixed(2);
+    this.notes = data.notes;
+    this.rating =data.rating;
+}
+
+function generateChart(selDiv, chartTitle, chartColor, chartColor2, chartData) {
+    var ctx = document.getElementById(selDiv).getContext('2d');
+
+    var myChart = new Chart(ctx, {
+        type: 'bar',
+        data: {
+            labels: chartData.map(sel => sel.x),
+            datasets: [{
+                label: chartTitle,
+                borderColor: chartColor,
+                backgroundColor: chartColor2,
+                data: chartData.map(sel => sel.y)
+            }]
+        },
+        options: {
+            title: {
+                text: chartTitle
+            },
+            scales: {
+                yAxes: [{
+                    ticks: {
+                        beginAtZero: true
+                    }
+                }]
+            },
+        }
+    });
+}
+
+$(function () {
+    $.getJSON("/api/strengthtraining", function(data) {
+        data = data.sort((a, b) => (a.date > b.date) ? 1 : ((b.date > a.date) ? -1 : 0)); // Ascending!
+        var mappedStrengthtraining = $.map(data, function(item) { return new Strengthtraining(item) });
+
+        var exercise = "{{ .exercise }}";
+        var filteredTrainings = mappedStrengthtraining.filter(dat => dat.exercise === exercise);
+
+        const resultTotal = filteredTrainings.map(sel => { return {
+                    x: sel.date,
+                    y: sel.reps * sel.weight
+                }});
+
+        const resultSingle = filteredTrainings.map(sel => { return {
+                    x: sel.date,
+                    y: sel.weight
+                }});
+
+        generateChart("strengthtrainingTotal", "Total by set", '#7EB26D', '#7EB26D88', resultTotal);
+        generateChart("strengthtrainingWeight", "Weight by set", '#7EB26D', '#7EB26D88', resultSingle);
+    });
+});
+</script>
+{{end}}
