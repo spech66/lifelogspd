@@ -9,7 +9,8 @@
 
     <canvas id="strengthtrainingTotal"></canvas>
     <canvas id="strengthtrainingWeight"></canvas>
-
+    <canvas id="strengthtrainingReps"></canvas>
+    
     <p>
         <a class="btn btn-secondary btn-lg" href="/strengthtraining" role="button"><i class="fas fa-arrow-circle-left fa-2x"></i><br />Back</a>
     </p>
@@ -74,8 +75,14 @@ $(function () {
                     y: sel.weight
                 }});
 
+        const resultReps = filteredTrainings.map(sel => { return {
+                    x: sel.date,
+                    y: sel.reps
+                }});
+
         generateChart("strengthtrainingTotal", "Total by set", '#7EB26D', '#7EB26D88', resultTotal);
         generateChart("strengthtrainingWeight", "Weight by set", '#7EB26D', '#7EB26D88', resultSingle);
+        generateChart("strengthtrainingReps", "Reps by set", '#7EB26D', '#7EB26D88', resultReps);
     });
 });
 </script>

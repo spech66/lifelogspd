@@ -169,15 +169,13 @@ function EnduranceworkoutListViewModel() {
     });
     ko.components.register('duration-widget', {
         viewModel: function(params) {
-            this.orgDuration = params.duration;
             if(params.duration() === "00:00:00" || params.duration() === 0) {
                 this.duration = "";
             } else {
-                this.duration = moment.duration(params.duration()).humanize();
+                this.duration = params.duration();
             }
         },
-        template: '<span data-bind="text: duration, visible: duration"></span><br />\
-                    <span data-bind="text: orgDuration, visible: duration" style="font-size: 0.8rem;"></span>'
+        template: '<span data-bind="text: duration, visible: duration"></span>'
     });
 
     // Load initial state from server, convert it to Enduranceworkout instances, then populate self.enduranceworkouts
