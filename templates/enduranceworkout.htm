@@ -63,7 +63,11 @@
         <tbody data-bind="foreach: enduranceworkouts, visible: enduranceworkouts().length > 0">
             <tr>
                 <th scope="row"><span data-bind="text: date"></span></th>
-                <td><span data-bind="text: exercise"></span></td>
+                <td>
+                    <a data-bind="attr: { href: '/enduranceworkoutgraph/' + exercise(), title: exercise }">
+                        <span data-bind="text: exercise"></span>
+                    </a>
+                </td>
                 <td><distance-widget params="distance: distance"></distance-widget></td>
                 <td><duration-widget params="duration: duration"></duration-widget></td>
                 <td><span data-bind="text: notes"></span></td>

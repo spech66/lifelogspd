@@ -57,6 +57,7 @@ func Init(config *helper.Config) *echo.Echo {
 	e.GET("/strengthtraining", view.StrengthtrainingHandler)
 	e.GET("/strengthtraininggraph/:exercise", view.StrengthtrainingGraphHandler)
 	e.GET("/enduranceworkout", view.EnduranceworkoutHandler)
+	e.GET("/enduranceworkoutgraph/:exercise", view.EnduranceworkoutGraphHandler)
 
 	// Parse all templates
 	templates := make(map[string]*template.Template)
@@ -67,6 +68,7 @@ func Init(config *helper.Config) *echo.Echo {
 	templates["strengthtraining.htm"] = template.Must(template.ParseFiles("templates/strengthtraining.htm", "templates/_base.htm"))
 	templates["strengthtraininggraph.htm"] = template.Must(template.ParseFiles("templates/strengthtraininggraph.htm", "templates/_base.htm"))
 	templates["enduranceworkout.htm"] = template.Must(template.ParseFiles("templates/enduranceworkout.htm", "templates/_base.htm"))
+	templates["enduranceworkoutgraph.htm"] = template.Must(template.ParseFiles("templates/enduranceworkoutgraph.htm", "templates/_base.htm"))
 	e.Renderer = &TemplateRegistry{
 		templates: templates,
 	}

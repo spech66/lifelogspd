@@ -1,0 +1,89 @@
+{{define "title"}}
+    {{ .exercise }}
+{{end}}
+{{define "header"}}
+{{end}}
+{{define "body"}}
+<div class="container text-center">
+    <h1>{{ .exercise }}</h1>
+
+    <canvas id="enduranceworkoutDistance"></canvas>
+    <canvas id="enduranceworkoutDuration"></canvas>
+    <canvas id="enduranceworkoutRating"></canvas>
+    
+    <p>
+        <a class="btn btn-secondary btn-lg" href="/enduranceworkout" role="button"><i class="fas fa-arrow-circle-left fa-2x"></i><br />Back</a>
+    </p>
+</div>
+{{end}}
+{{define "scripts"}}
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.7.3/Chart.min.js"></script>
+<script>
+function Enduranceworkout(data) {
+    this.date = data.date;
+    this.exercise = data.exercise;
+    this.distance = data.distance;
+    this.duration = data.duration;
+    this.notes = data.notes;
+    this.rating = data.rating;
+}
+
+function generateChart(selDiv, chartTitle, chartColor, chartColor2, chartData) {
+    var ctx = document.getElementById(selDiv).getContext('2d');
+
+    var myChart = new Chart(ctx, {
+        type: 'bar',
+        data: {
+            labels: chartData.map(sel => sel.x),
+            datasets: [{
+                label: chartTitle,
+                borderColor: chartColor,
+                backgroundColor: chartColor2,
+                data: chartData.map(sel => sel.y)
+            }]
+        },
+        options: {
+            title: {
+                text: chartTitle
+            },
+            scales: {
+                yAxes: [{
+                    ticks: {
+                        beginAtZero: true
+                    }
+                }]
+            },
+        }
+    });
+}
+
+$(function () {
+    $.getJSON("/api/enduranceworkout", function(data) {
+        data = data.sort((a, b) => (a.date > b.date) ? 1 : ((b.date > a.date) ? -1 : 0)); // Ascending!
+        var mappedEnduranceworkout = $.map(data, function(item) { return new Enduranceworkout(item) });
+
+        var exercise = "{{ .exercise }}";
+        var filteredTrainings = mappedEnduranceworkout.filter(dat => dat.exercise === exercise);
+
+        const resultDistance = filteredTrainings.map(sel => { return {
+                    x: sel.date,
+                    y: sel.distance / 1000.0
+                }});
+
+        const resultDuration = filteredTrainings.map(sel => { return {
+                    x: sel.date,
+                    y: moment.duration(sel.duration).asMinutes()
+                }});
+
+        const resultRating = filteredTrainings.map(sel => { return {
+                    x: sel.date,
+                    y: sel.rating
+                }});
+
+        generateChart("enduranceworkoutDistance", "Distance (Km)", '#7EB26D', '#7EB26D88', resultDistance);
+        generateChart("enduranceworkoutDuration", "Duration (Min.)", '#7EB26D', '#7EB26D88', resultDuration);
+        generateChart("enduranceworkoutRating", "Rating", '#7EB26D', '#7EB26D88', resultRating);
+    });
+});
+</script>
+{{end}}

@@ -12,7 +12,7 @@ This daemon is intend for use in a local network. For securing the access use a 
 * **Strength training:** :heavy_check_mark:
 * **Strength training chart:** :heavy_check_mark:
 * **Endurance workout:** :heavy_check_mark:
-* **Endurance workout chart:** Work in progress :chart_with_upwards_trend:
+* **Endurance workout chart:** :heavy_check_mark:
 
 ### Improvements
 
