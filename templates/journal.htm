@@ -133,7 +133,7 @@ function JournalListViewModel() {
     // Load todays journal = all methods and the date input will use the YYYY-MM-DD Format
     this.editJournal(new Journal({ date: moment().format('YYYY-MM-DD'), text: "" }));
     
-    self.simplemde = new SimpleMDE({ forceSync: true });
+    self.simplemde = new SimpleMDE({ forceSync: true, spellChecker: false });
     self.simplemde.codemirror.on("change", function() {
         self.newJournalText(self.simplemde.value());
     });
