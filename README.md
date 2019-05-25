@@ -1,3 +1,5 @@
+[![Go Report Card](https://goreportcard.com/badge/github.com/spech66/lifelogspd)](https://goreportcard.com/report/github.com/spech66/lifelogspd) [![GoDoc](https://godoc.org/github.com/spech66/lifelogspd?status.svg)](https://godoc.org/github.com/spech66/lifelogspd)
+
 # lifelogspd
 
 LifelogSPDaemon - Data collection/editor related to [LifelogSP](https://github.com/spech66/lifelogsp).
