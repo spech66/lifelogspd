@@ -19,6 +19,7 @@
 {{end}}
 {{define "scripts"}}
 <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.7.3/Chart.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/regression/1.4.0/regression.min.js"></script>
 <script>
 function Measurement(data) {
     this.date = data.date;
@@ -30,18 +31,28 @@ function Measurement(data) {
     this.height = data.height;
 }
 
-function generateChart(selDiv, chartTitle, chartColor, chartColor2, chartData) {
+function generateChart(selDiv, chartTitle, chartColor, chartColor2, chartData, chartDataTrend = null) {
     var ctx = document.getElementById(selDiv).getContext('2d');
+
+    datasets = [{
+        label: chartTitle,
+        borderColor: chartColor,
+        backgroundColor: chartColor2,
+        data: chartData
+    }];
+    if(chartDataTrend != null) {
+        datasets.push({
+            label: chartTitle + " Trend",
+            borderColor: '#335d99',
+            backgroundColor: '#00000000',
+            data: chartDataTrend
+        });
+    }
 
     var myChart = new Chart(ctx, {
         type: 'line',
         data: {
-            datasets: [{
-                label: chartTitle,
-                borderColor: chartColor,
-                backgroundColor: chartColor2,
-                data: chartData
-            }]
+            datasets
         },
         options: {
             title: {
@@ -72,36 +83,66 @@ function generateChart(selDiv, chartTitle, chartColor, chartColor2, chartData) {
     });
 }
 
+function generateXYArray(data, maxRange, property) {
+    return data.filter(dat => moment(dat.date).isAfter(maxRange)).map(sel => { return {
+        x: sel.date,
+        y: sel[property]
+    }});
+}
+
+function generateTrend(data) {
+    if(data.length < 2) {
+        return null;
+    }
+
+    const arrayData = data.map(dat => [
+        (new Date(dat.x)).getTime(),
+        +dat.y
+    ]);
+    const result = regression('linear', arrayData);
+
+    /*const gradient = result.equation[0];
+    const yIntercept = result.equation[1];
+    console.log(result);
+    console.log(arrayData[0][0] * result.equation[0] + result.equation[1]);
+    console.log(arrayData[arrayData.length-1][0] * result.equation[0] + result.equation[1]);*/
+
+    const trend = [
+        {
+            x: data[0].x,
+            y: [arrayData[0][0] * result.equation[0] + result.equation[1]]
+        }, {
+            x: data[arrayData.length-1].x,
+            y: [arrayData[arrayData.length-1][0] * result.equation[0] + result.equation[1]]
+        }
+    ];
+    return trend;
+}
+
 $(function () {
     $.getJSON("/api/weight", function(data) {
         data = data.sort((a, b) => (a.date > b.date) ? 1 : ((b.date > a.date) ? -1 : 0)); // Ascending!
         var mappedMeasurements = $.map(data, function(item) { return new Measurement(item) });
 
         var twoMonth = moment().startOf('day').subtract(2, 'months');
-        const result2Month = mappedMeasurements.filter(dat => moment(dat.date).isAfter(twoMonth)).map(sel => { return {
-                    x: sel.date,
-                    y: sel.weight
-                }});
+        const result2Month = generateXYArray(mappedMeasurements, twoMonth, "weight");
+        const result2MonthTrend = generateTrend(result2Month);
 
         var oneYear = moment().startOf('day').subtract(1, 'year');
-        const result1Year = mappedMeasurements.filter(dat => moment(dat.date).isAfter(oneYear)).map(sel => { return {
-                    x: sel.date,
-                    y: sel.weight
-                }});
-        const result1YearBmi = mappedMeasurements.filter(dat => moment(dat.date).isAfter(oneYear)).map(sel => { return {
-                    x: sel.date,
-                    y: sel.bmi
-                }});
+        const result1Year = generateXYArray(mappedMeasurements, oneYear, "weight");
+        const result1YearTrend = generateTrend(result1Year);
+        const result1YearBmi = generateXYArray(mappedMeasurements, oneYear, "bmi");
 
         const resultAll = mappedMeasurements.map(sel => { return {
                     x: sel.date,
                     y: sel.weight
                 }});
+        const resultAllTrend = generateTrend(resultAll);
 
-        generateChart("weightChartShort", "2 Month", '#7EB26D', '#7EB26D88', result2Month);
-        generateChart("weightChartYear", "1 Year Weight", '#7EB26D', '#7EB26D88', result1Year);
+        generateChart("weightChartShort", "2 Month", '#7EB26D', '#7EB26D88', result2Month, result2MonthTrend);
+        generateChart("weightChartYear", "1 Year Weight", '#7EB26D', '#7EB26D88', result1Year, result1YearTrend);
         generateChart("weightChartYearBmi", "1 Year BMI", '#335d99','#335d9988', result1YearBmi);
-        generateChart("weightChartAll", "All", '#7EB26D', '#7EB26D88', resultAll);
+        generateChart("weightChartAll", "All", '#7EB26D', '#7EB26D88', resultAll, resultAllTrend);
     });
 });
 </script>
