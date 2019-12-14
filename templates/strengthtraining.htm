@@ -137,7 +137,7 @@ function StrengthtrainingListViewModel() {
             type: 'DELETE',
         })
         .done(function(data) {
-            self.strengthtrainings.destroy(strengthtraining);
+            self.strengthtrainings.remove(strengthtraining);
         })
         .fail(function (jqXHR, textStatus, error) {
             self.errorMessage("Delete error: " + error);

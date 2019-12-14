@@ -137,7 +137,7 @@ function EnduranceworkoutListViewModel() {
             type: 'DELETE',
         })
         .done(function(data) {
-            self.enduranceworkouts.destroy(enduranceworkout);
+            self.enduranceworkouts.remove(enduranceworkout);
         })
         .fail(function (jqXHR, textStatus, error) {
             self.errorMessage("Delete error: " + error);

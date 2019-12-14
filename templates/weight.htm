@@ -101,7 +101,7 @@ function MeasurementListViewModel() {
             type: 'DELETE',
         })
         .done(function(data) {
-            self.measurements.destroy(measurement);
+            self.measurements.remove(measurement);
         })
         .fail(function (jqXHR, textStatus, error) {
             self.errorMessage("Delete error: " + error);

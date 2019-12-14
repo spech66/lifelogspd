@@ -2,7 +2,7 @@
     Journal
 {{end}}
 {{define "header"}}
-<link rel="stylesheet" href="https://cdn.jsdelivr.net/simplemde/latest/simplemde.min.css">
+<link rel="stylesheet" href="https://unpkg.com/easymde/dist/easymde.min.css">
 {{end}}
 {{define "body"}}
 <div class="container text-center">
@@ -57,7 +57,7 @@
 </div>
 {{end}}
 {{define "scripts"}}
-<script src="https://cdn.jsdelivr.net/simplemde/latest/simplemde.min.js"></script>
+<script src="https://unpkg.com/easymde/dist/easymde.min.js"></script>
 <script>
 function Journal(data) {
     this.date = ko.observable(data.date);
@@ -90,7 +90,7 @@ function JournalListViewModel() {
 
             self.newJournalDate(data.date);
             //self.newJournalText(data.text);
-            self.simplemde.value(data.text);
+            self.easymde.value(data.text);
         })
         .fail(function (jqXHR, textStatus, error) {
             self.errorMessage("Post error: " + error);
@@ -102,7 +102,7 @@ function JournalListViewModel() {
             var journalsData = $.map(data, function(item) { return new Journal(item) });
             self.newJournalDate(journalsData[0].date());
             //self.newJournalText(journalsData[0].text());
-            self.simplemde.value(journalsData[0].text());
+            self.easymde.value(journalsData[0].text());
         });
     }
 
@@ -112,7 +112,7 @@ function JournalListViewModel() {
             type: 'DELETE',
         })
         .done(function(data) {
-            self.journals.destroy(journal);
+            self.journals.remove(journal);
         })
         .fail(function (jqXHR, textStatus, error) {
             self.errorMessage("Delete error: " + error);
@@ -133,9 +133,9 @@ function JournalListViewModel() {
     // Load todays journal = all methods and the date input will use the YYYY-MM-DD Format
     this.editJournal(new Journal({ date: moment().format('YYYY-MM-DD'), text: "" }));
     
-    self.simplemde = new SimpleMDE({ forceSync: true, spellChecker: false });
-    self.simplemde.codemirror.on("change", function() {
-        self.newJournalText(self.simplemde.value());
+    self.easymde = new EasyMDE({ forceSync: true, spellChecker: false });
+    self.easymde.codemirror.on("change", function() {
+        self.newJournalText(self.easymde.value());
     });
 }
 
