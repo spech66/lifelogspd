@@ -51,7 +51,7 @@
                 <th scope="row"><span data-bind="text: date"></span></th>
                 <td><span data-bind="text: weight"></span> kg</td>
                 <td><span data-bind="text: height"></span> cm</td>
-                <td><span data-bind="text: bmi"></span></td>
+                <td data-bind="class: $parent.bmicolor($data)"><span data-bind="text: bmi"></span></td>
                 <td><a href="#" data-bind="click: $parent.removeMeasurement"><i class="fas fa-trash fa-2x"></i></a></td>
             </tr>
         </tbody>
@@ -106,6 +106,21 @@ function MeasurementListViewModel() {
         .fail(function (jqXHR, textStatus, error) {
             self.errorMessage("Delete error: " + error);
         });
+    };
+
+    self.bmicolor = function(measurement){
+        var b = measurement.bmi();
+        if (b < 18.5) { // < 18,49
+            return "colun";
+        } else if (b < 25.0) { // 18,50–24,99
+            return "colno";
+        } else if (b < 30.0) { // 25,00–29,99
+            return "colov";
+        } else if (b < 35.0) { // 30,00–34,99
+            return "colo1";
+        } else { // ≥ 35,00
+            return "colo2";
+        }
     };
 
     // Load initial state from server, convert it to Measurement instances, then populate self.measurements
