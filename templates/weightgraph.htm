@@ -12,6 +12,7 @@
     <canvas id="weightChartYear"></canvas>
     <canvas id="weightChartYearBmi"></canvas>
     <canvas id="weightChartAll"></canvas>
+    <canvas id="weightChartAllBmi"></canvas>
 
     <p>
         <a class="btn btn-secondary btn-lg" href="/weight" role="button"><i class="fas fa-arrow-circle-left fa-2x"></i><br />Back</a>
@@ -184,11 +185,19 @@ $(function () {
                     y: sel.weight
                 }});
         const resultAllTrend = generateTrend(resultAll);
+        const resultAllBmi = mappedMeasurements.map(sel => { return {
+                    x: sel.date,
+                    y: sel.bmi
+                }});
+        const resultAllBmiThresholds = generateBmiThresholds(resultAllBmi);
 
         generateChart("weightChartShort", "2 Month", '#7EB26D', '#7EB26D88', result2Month, result2MonthTrend,);
+
         generateChart("weightChartYear", "1 Year Weight", '#7EB26D', '#7EB26D88', result1Year, result1YearTrend);
         generateChart("weightChartYearBmi", "1 Year BMI", '#335d99','#335d9988', result1YearBmi, null, result1YearBmiThresholds);
+
         generateChart("weightChartAll", "All", '#7EB26D', '#7EB26D88', resultAll, resultAllTrend);
+        generateChart("weightChartAllBmi", "All BMI", '#335d99','#335d9988', resultAllBmi, null, resultAllBmiThresholds);
     });
 });
 </script>
