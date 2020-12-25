@@ -1,8 +1,8 @@
-[![Go Report Card](https://goreportcard.com/badge/github.com/spech66/lifelogspd)](https://goreportcard.com/report/github.com/spech66/lifelogspd) [![GoDoc](https://godoc.org/github.com/spech66/lifelogspd?status.svg)](https://godoc.org/github.com/spech66/lifelogspd)
-
 # lifelogspd
 
-LifelogSPDaemon - Data collection/editor related to [LifelogSP](https://github.com/spech66/lifelogsp).
+[![Go Report Card](https://goreportcard.com/badge/github.com/spech66/lifelogspd)](https://goreportcard.com/report/github.com/spech66/lifelogspd) [![GoDoc](https://godoc.org/github.com/spech66/lifelogspd?status.svg)](https://godoc.org/github.com/spech66/lifelogspd)
+
+LifelogSPDaemon - **Journal, weight, Strength training and endurance training tracker**.
 
 This daemon is intend for use in a local network. For securing the access use a proxy like nginx (see below)!
 
@@ -79,6 +79,28 @@ server {
                 proxy_pass http://localhost:8066;
         }
 }
+```
+
+## Linux (systemd) Service
+
+Create service file at `/etc/systemd/system/lifelog.service`. Start with `systemctl start lifelog`. Autostart on boot with `systemctl enable lifelog`.
+
+```ini
+[Unit]
+Description=LifelogSPDeamon
+After=network.target
+
+[Service]
+Type=simple
+ExecStart=/root/go/src/github.com/spech66/lifelogspd/lifelogspd -bind localhost:8066 -config /root/lifelogspd/config.json
+Restart=always
+# Consider creating a dedicated user here:
+User=root
+#Environment=
+WorkingDirectory=/root/go/src/github.com/spech66/lifelogspd/
+
+[Install]
+WantedBy=multi-user.target
 ```
 
 ## Dependencies
