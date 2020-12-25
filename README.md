@@ -16,10 +16,6 @@ This daemon is intend for use in a local network. For securing the access use a 
 * **Endurance workout:** :heavy_check_mark:
 * **Endurance workout chart:** :heavy_check_mark:
 
-### Improvements
-
-* Weight Graph: Baselines for good/bad bmi/weight
-
 ## Screenshots
 
 ![Start](https://raw.githubusercontent.com/spech66/lifelogspd/master/_screenshots/s_001_start.png "Start")
