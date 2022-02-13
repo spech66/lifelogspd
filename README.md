@@ -102,3 +102,8 @@ WantedBy=multi-user.target
 ## Dependencies
 
 * [Go echo web framework](github.com/labstack/echo) - High performance, minimalist Go web framework
+
+## Development
+
+* Update Modules: `go mod tidy`
+* Run: `go run . -config example.config.json`
