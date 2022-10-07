@@ -21,7 +21,8 @@ This daemon is intend for use in a local network. For securing the access use a 
 ```
   $ git clone https://github.com/spech66/lifelogspd
   $ cd lifelogspd 
-  $ docker run -p 8066:8066 `pwd`/data:/app/data `pwd`/example.config.json:/app/config.json
+  $ docker build . -t lifelogspd
+  $ docker run -p 8066:8066 -v `pwd`/data:/app/data `pwd`/example.config.json:/app/config.json lifelogspd
 ```
 
 ## Screenshots
