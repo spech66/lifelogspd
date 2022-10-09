@@ -18,6 +18,15 @@ This daemon is intend for use in a local network. For securing the access use a 
 * **Endurance workout:** :heavy_check_mark:
 * **Endurance workout chart:** :heavy_check_mark:
 
+## Selfhost with docker
+
+```
+  $ git clone https://github.com/spech66/lifelogspd
+  $ cd lifelogspd 
+  $ docker build . -t lifelogspd
+  $ docker run -p 8066:8066 -v `pwd`/data:/app/data `pwd`/example.config.json:/app/config.json lifelogspd
+```
+
 ## Screenshots
 
 ![Start](https://raw.githubusercontent.com/spech66/lifelogspd/master/_screenshots/s_001_start.png "Start")
@@ -54,6 +63,7 @@ cd %GOPATH%\src\github.com\spech66\lifelogspd
 go build
 lifelogspd.exe -config example.config.json
 ```
+
 
 ## nginx reverse proxy with basic auth
 
