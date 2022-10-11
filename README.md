@@ -1,6 +1,6 @@
 # lifelogspd
 
-Version 2.0 is work in progress at [LifelogBb](https://github.com/spech66/lifelogbb).
+Version 2.0 is work in progress at [LifelogBB](https://github.com/spech66/lifelogbb).
 
 [![Go Report Card](https://goreportcard.com/badge/github.com/spech66/lifelogspd)](https://goreportcard.com/report/github.com/spech66/lifelogspd) [![GoDoc](https://godoc.org/github.com/spech66/lifelogspd?status.svg)](https://godoc.org/github.com/spech66/lifelogspd)
 
